@@ -45,7 +45,7 @@ has 'ua' => (
 
 has 'server' => (
     is => 'lazy',
-    default => sub { 'http://192.168.1.97:11434/api' }, # XXX pull from OpenAPI file instead
+    default => sub { 'http://localhost:11434/api' }, # XXX pull from OpenAPI file instead
 );
 
 =head2 C<< checkBlob >>

@@ -175,7 +175,9 @@ use Mojo::JSON 'decode_json';
 use experimental 'signatures';
 use AI::Ollama::Client;
 
-my $ol = AI::Ollama::Client->new;
+my $ol = AI::Ollama::Client->new(
+    server => 'https://192.168.1.97:11434/api',
+);
 
 my $tx = $ol->generateCompletion(
     model => 'llama2',
