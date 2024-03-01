@@ -122,53 +122,6 @@
 #
 #1;
 
-#package AI::Ollama 0.01;
-#use 5.020;
-#use Moo 2;
-#use experimental 'signatures';
-#use Mojo::JSON 'encode_json';
-#use Mojo::UserAgent;
-#use Mojo::Message::Request;
-#use OpenAPI::Modern;
-#use YAML::PP;
-#
-#my $schema = YAML::PP->new( boolean => 'JSON::PP' )->load_file( 'ollama/ollama-curated.yaml' );
-#has 'openapi' => (
-#    is => 'lazy',
-#    default => sub { OpenAPI::Modern->new( openapi_schema => $schema, openapi_uri => '/api' )},
-#);
-#
-#has 'ua' => (
-#    is => 'lazy',
-#    default => sub { Mojo::UserAgent->new },
-#);
-#
-#has 'server' => (
-#    is => 'lazy',
-#    default => sub { 'http://192.168.1.97:11434/api' },
-#);
-#
-#sub generate( $self, %options ) {
-#    my $req = AI::Ollama::GenerateCompletionRequest->new(
-#        %options,
-#    );
-#    my $url = $self->server . '/generate';
-#    my $tx = $self->ua->build_tx(
-#        POST => $url,
-#        {
-#            "Content-Type" => 'application/json',
-#        }
-#        => json => $req->as_hash,
-#    );
-#
-#    # validate our request while developing
-#    my $results = $self->openapi->validate_request($tx->req);
-#    say $results;
-#say $tx->req->to_string;
-#
-#    return $tx
-#}
-
 package main;
 use 5.020;
 use Mojo::JSON 'decode_json';
