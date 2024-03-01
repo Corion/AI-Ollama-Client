@@ -189,7 +189,30 @@ sub <%= $method->{name} %>( $self, %options ) {
     say $results;
     say $tx->req->to_string;
 
-    return $tx
+    # We need to start $tx here and then append us to the promise?!
+    my $res = $self->ua->start_p($tx)->then(sub($tx) {
+        my $res = $tx->res;
+
+%# Should this be its own subroutine instead?!
+% for my $code (sort keys $elt->{responses}->%*) {
+%     my $info = $elt->{responses}->{ $code };
+        if( $res->code == <%= $code %> ) {
+            # <%= $info->{description} %>
+%       # Check the content type
+%       # Will we always have a content type?!
+%       if( $info->{content} ) {
+%           for my $ct (sort $info->{content}->%*) {
+            if( $res->content_type eq '<%= $ct %>' ) {
+            }
+%           }
+%       } else { # we don't know how to handle this, so pass $res
+            return $res;
+%       }
+        }
+% }
+    }
+
+    return $res
 }
 
 % }
