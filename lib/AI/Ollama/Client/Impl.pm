@@ -87,7 +87,7 @@ sub checkBlob( $self, %options ) {
             # Blob was not found
             return $res;
         }
-    })
+    });
 
     return $res
 }
@@ -128,7 +128,7 @@ sub createBlob( $self, %options ) {
             # Blob was successfully created
             return $res;
         }
-    })
+    });
 
     return $res
 }
@@ -166,12 +166,12 @@ sub generateChatCompletion( $self, %options ) {
 
         if( $res->code == 200 ) {
             # Successful operation.
-            if( $res->content_type eq 'HASH(0x558851be83a0)' ) {
+            if( $res->content_type eq 'HASH(0x5597894e9000)' ) {
             }
             if( $res->content_type eq 'application/x-ndjson' ) {
             }
         }
-    })
+    });
 
     return $res
 }
@@ -211,7 +211,7 @@ sub copyModel( $self, %options ) {
             # Successful operation.
             return $res;
         }
-    })
+    });
 
     return $res
 }
@@ -249,12 +249,12 @@ sub createModel( $self, %options ) {
 
         if( $res->code == 200 ) {
             # Successful operation.
-            if( $res->content_type eq 'HASH(0x558851bfea00)' ) {
+            if( $res->content_type eq 'HASH(0x5597894ff5c0)' ) {
             }
             if( $res->content_type eq 'application/x-ndjson' ) {
             }
         }
-    })
+    });
 
     return $res
 }
@@ -294,7 +294,7 @@ sub deleteModel( $self, %options ) {
             # Successful operation.
             return $res;
         }
-    })
+    });
 
     return $res
 }
@@ -332,12 +332,12 @@ sub generateEmbedding( $self, %options ) {
 
         if( $res->code == 200 ) {
             # Successful operation.
-            if( $res->content_type eq 'HASH(0x558851bf4a88)' ) {
+            if( $res->content_type eq 'HASH(0x5597894f55b8)' ) {
             }
             if( $res->content_type eq 'application/json' ) {
             }
         }
-    })
+    });
 
     return $res
 }
@@ -375,12 +375,12 @@ sub generateCompletion( $self, %options ) {
 
         if( $res->code == 200 ) {
             # Successful operation.
-            if( $res->content_type eq 'HASH(0x558851bdd6f0)' ) {
+            if( $res->content_type eq 'HASH(0x5597894de3b0)' ) {
             }
             if( $res->content_type eq 'application/x-ndjson' ) {
             }
         }
-    })
+    });
 
     return $res
 }
@@ -418,12 +418,12 @@ sub pullModel( $self, %options ) {
 
         if( $res->code == 200 ) {
             # Successful operation.
-            if( $res->content_type eq 'HASH(0x558851c35100)' ) {
+            if( $res->content_type eq 'HASH(0x559789535b70)' ) {
             }
             if( $res->content_type eq 'application/json' ) {
             }
         }
-    })
+    });
 
     return $res
 }
@@ -461,12 +461,12 @@ sub pushModel( $self, %options ) {
 
         if( $res->code == 200 ) {
             # Successful operation.
-            if( $res->content_type eq 'HASH(0x558851c42658)' ) {
+            if( $res->content_type eq 'HASH(0x559789543068)' ) {
             }
             if( $res->content_type eq 'application/json' ) {
             }
         }
-    })
+    });
 
     return $res
 }
@@ -504,12 +504,12 @@ sub showModelInfo( $self, %options ) {
 
         if( $res->code == 200 ) {
             # Successful operation.
-            if( $res->content_type eq 'HASH(0x558851c13668)' ) {
+            if( $res->content_type eq 'HASH(0x559789514138)' ) {
             }
             if( $res->content_type eq 'application/json' ) {
             }
         }
-    })
+    });
 
     return $res
 }
@@ -545,12 +545,12 @@ sub listModels( $self, %options ) {
 
         if( $res->code == 200 ) {
             # Successful operation.
-            if( $res->content_type eq 'HASH(0x558851c07630)' ) {
+            if( $res->content_type eq 'HASH(0x5597895081f0)' ) {
             }
             if( $res->content_type eq 'application/json' ) {
             }
         }
-    })
+    });
 
     return $res
 }
