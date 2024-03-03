@@ -238,6 +238,8 @@ use parent '<%= $prefix %>::<%= $name %>::Impl';
 
 =head1 NAME
 
+<%= $prefix %>::<%= $name %> - Client for <%= $prefix %>
+
 =head1 SYNOPSIS
 
   use 5.020;
@@ -255,10 +257,13 @@ use parent '<%= $prefix %>::<%= $name %>::Impl';
 % my $elt = $method->{elt};
 =head2 C<< <%= $method->{name} %> >>
 
-<%= $elt->{summary} =~ s/\s*$//r %>
+  $client-><%= $method->{name} %>();
+
+<%= $elt->{summary} =~ s/\s*$//r; %>
 
 =cut
 
+% }
 1;
 __CLIENT__
 
