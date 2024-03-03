@@ -45,8 +45,12 @@ sub fixup_json_ref( $root, $curr=$root ) {
 # Fix up the schema to resolve JSON-style refs into real refs:
 $schema = fixup_json_ref( $schema );
 
-sub update_file {
-    my( $filename, $new_content ) = @_;
+sub update_file( %options ) {
+    my $filename = delete $options{ filename }
+        or die "Need a filename to create/update";
+    my $new_content = delete $options{ content };
+    my $keep_existing = $options{ keep_existing };
+    my $encoding = $options{ encoding } // ':raw:encoding(UTF-8)';
     my $content;
     if( -f $filename ) {
         open my $fh, '<:raw:encoding(UTF-8)', $filename
@@ -243,8 +247,12 @@ for my $name ( sort keys $schema->{components}->{schemas}->%*) {
     }
     my $template = $template{ $type };
 
+
     my $filename = filename( $name );
-    update_file( $filename, $mt->render( $template, \%info ) );
+    update_file(
+        filename => $filename,
+        content  => $mt->render( $template, \%info )
+    );
 }
 
 # Add the methods to the main class (or, also to the current class, depending
@@ -270,4 +278,25 @@ for my $path (sort keys $schema->{paths}->%*) {
     }
 }
 
-update_file( filename('Client'), $mt->render($template{client}, { methods => \@methods, name => 'Client', schema => $schema, %options }));
+# Generate ::Client::Impl
+update_file( filename => filename('Client::Impl'),
+             content => $mt->render($template{client_implementation},
+             {
+                methods => \@methods,
+                name => 'Client::Impl',
+                schema => $schema,
+                %options
+              }));
+
+# If it does not exist, generate the stub for the main file ::Client as well
+# The client consists of "use parent '::Client::Impl';
+# and the pod for all the methods, for manual editing.
+update_file( filename => filename('Client'),
+             keep_existing => 1,
+             content => $mt->render($template{client},
+             {
+                methods => \@methods,
+                name => 'Client',
+                schema => $schema,
+                %options
+              }));
