@@ -217,7 +217,8 @@ sub <%= $method->{name} %>( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = Future::Mojo->new()->then( sub( $tx ) {
+    my $r1 = Future::Mojo->new();
+    my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
 
 %# Should this be its own subroutine instead?!
@@ -240,20 +241,25 @@ sub <%= $method->{name} %>( $self, %options ) {
 %               }
 %               if( my $restype = $info->{content}->{$ct}->{schema}) {
                 # create <%= $restype->{name} %> from $resp
+                return Future::Mojo->done(
+                    <%= $prefix %>::<%= $restype->{name} %>->new($payload),
+                );
+%               } else {
+                return Future::Mojo->done( $payload );
 %               }
             }
 %           }
 %       } else { # we don't know how to handle this, so pass $res
-            return Future->done($resp);
+            return Future::Mojo->done($resp);
 %       }
         }
 % }
     });
 
     # Start our transaction
-    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
-        $res->done( $tx );
-        undef $_tx;
+    $tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $r1->resolve( $tx );
+        undef $r1;
     });
 
     return $res
