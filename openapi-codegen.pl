@@ -225,6 +225,9 @@ sub <%= $method->{name} %>( $self, %options ) {
 %               } else {
                 my $payload = $resp->body(); # <%= $ct %>
 %               }
+%               if( my $restype = $info->{content}->{$ct}->{schema}) {
+                # create <%= $restype->{name} %> from $resp
+%               }
             }
 %           }
 %       } else { # we don't know how to handle this, so pass $res

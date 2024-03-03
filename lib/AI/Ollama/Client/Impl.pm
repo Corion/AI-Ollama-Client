@@ -180,6 +180,7 @@ sub generateChatCompletion( $self, %options ) {
             # Successful operation.
             if( $resp->content_type eq 'application/x-ndjson' ) {
                 my $payload = $resp->body(); # application/x-ndjson
+                # create GenerateChatCompletionResponse from $resp
             }
         }
     });
@@ -274,6 +275,7 @@ sub createModel( $self, %options ) {
             # Successful operation.
             if( $resp->content_type eq 'application/x-ndjson' ) {
                 my $payload = $resp->body(); # application/x-ndjson
+                # create CreateModelResponse from $resp
             }
         }
     });
@@ -368,6 +370,7 @@ sub generateEmbedding( $self, %options ) {
             # Successful operation.
             if( $resp->content_type eq 'application/json' ) {
                 my $payload = $resp->json();
+                # create GenerateEmbeddingResponse from $resp
             }
         }
     });
@@ -416,6 +419,7 @@ sub generateCompletion( $self, %options ) {
             # Successful operation.
             if( $resp->content_type eq 'application/x-ndjson' ) {
                 my $payload = $resp->body(); # application/x-ndjson
+                # create GenerateCompletionResponse from $resp
             }
         }
     });
@@ -464,6 +468,7 @@ sub pullModel( $self, %options ) {
             # Successful operation.
             if( $resp->content_type eq 'application/json' ) {
                 my $payload = $resp->json();
+                # create PullModelResponse from $resp
             }
         }
     });
@@ -512,6 +517,7 @@ sub pushModel( $self, %options ) {
             # Successful operation.
             if( $resp->content_type eq 'application/json' ) {
                 my $payload = $resp->json();
+                # create PushModelResponse from $resp
             }
         }
     });
@@ -560,6 +566,7 @@ sub showModelInfo( $self, %options ) {
             # Successful operation.
             if( $resp->content_type eq 'application/json' ) {
                 my $payload = $resp->json();
+                # create ModelInfo from $resp
             }
         }
     });
@@ -606,6 +613,7 @@ sub listModels( $self, %options ) {
             # Successful operation.
             if( $resp->content_type eq 'application/json' ) {
                 my $payload = $resp->json();
+                # create ModelsResponse from $resp
             }
         }
     });
