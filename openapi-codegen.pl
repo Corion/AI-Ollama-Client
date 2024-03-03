@@ -164,6 +164,17 @@ has 'server' => (
 
 <%= $elt->{summary} =~ s/\s*$//r %>
 
+% for my $code (sort keys $elt->{responses}->%*) {
+%     my $info = $elt->{responses}->{ $code };
+%        if( my $content = $info->{content} ) {
+%            for my $ct (sort keys $content->%*) {
+%                if( $content->{$ct}->{schema}) {
+Returns a L<< <%= $prefix %>::<%= $content->{$ct}->{schema}->{name} %> >>.
+%                }
+%             }
+%         }
+%     }
+
 =cut
 
 sub <%= $method->{name} %>( $self, %options ) {
