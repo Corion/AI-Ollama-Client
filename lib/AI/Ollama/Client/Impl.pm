@@ -54,6 +54,7 @@ has 'server' => (
 
 Check to see if a blob exists on the Ollama server which is useful when creating models.
 
+
 =cut
 
 sub checkBlob( $self, %options ) {
@@ -76,23 +77,24 @@ sub checkBlob( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = Future::Mojo->new()->then( sub( $tx ) {
+    my $r1 = Future::Mojo->new();
+    my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
 
         if( $resp->code == 200 ) {
             # Blob exists on the server
-            return Future->done($resp);
+            return Future::Mojo->done($resp);
         }
         if( $resp->code == 404 ) {
             # Blob was not found
-            return Future->done($resp);
+            return Future::Mojo->done($resp);
         }
     });
 
     # Start our transaction
-    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
-        $res->done( $tx );
-        undef $_tx;
+    $tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $r1->resolve( $tx );
+        undef $r1;
     });
 
     return $res
@@ -101,6 +103,7 @@ sub checkBlob( $self, %options ) {
 =head2 C<< createBlob >>
 
 Create a blob from a file. Returns the server file path.
+
 
 =cut
 
@@ -127,19 +130,20 @@ sub createBlob( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = Future::Mojo->new()->then( sub( $tx ) {
+    my $r1 = Future::Mojo->new();
+    my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
 
         if( $resp->code == 201 ) {
             # Blob was successfully created
-            return Future->done($resp);
+            return Future::Mojo->done($resp);
         }
     });
 
     # Start our transaction
-    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
-        $res->done( $tx );
-        undef $_tx;
+    $tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $r1->resolve( $tx );
+        undef $r1;
     });
 
     return $res
@@ -148,6 +152,8 @@ sub createBlob( $self, %options ) {
 =head2 C<< generateChatCompletion >>
 
 Generate the next message in a chat with a provided model.
+
+Returns a L<< AI::Ollama::GenerateChatCompletionResponse >>.
 
 =cut
 
@@ -173,22 +179,28 @@ sub generateChatCompletion( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = Future::Mojo->new()->then( sub( $tx ) {
+    my $r1 = Future::Mojo->new();
+    my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            if( $resp->content_type eq 'application/x-ndjson' ) {
+            my $ct = $resp->headers->content_type;
+            $ct =~ s/;\s+.*//;
+            if( $ct eq 'application/x-ndjson' ) {
                 my $payload = $resp->body(); # application/x-ndjson
                 # create GenerateChatCompletionResponse from $resp
+                return Future::Mojo->done(
+                    AI::Ollama::GenerateChatCompletionResponse->new($payload),
+                );
             }
         }
     });
 
     # Start our transaction
-    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
-        $res->done( $tx );
-        undef $_tx;
+    $tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $r1->resolve( $tx );
+        undef $r1;
     });
 
     return $res
@@ -197,6 +209,7 @@ sub generateChatCompletion( $self, %options ) {
 =head2 C<< copyModel >>
 
 Creates a model with another name from an existing model.
+
 
 =cut
 
@@ -222,19 +235,20 @@ sub copyModel( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = Future::Mojo->new()->then( sub( $tx ) {
+    my $r1 = Future::Mojo->new();
+    my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            return Future->done($resp);
+            return Future::Mojo->done($resp);
         }
     });
 
     # Start our transaction
-    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
-        $res->done( $tx );
-        undef $_tx;
+    $tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $r1->resolve( $tx );
+        undef $r1;
     });
 
     return $res
@@ -243,6 +257,8 @@ sub copyModel( $self, %options ) {
 =head2 C<< createModel >>
 
 Create a model from a Modelfile.
+
+Returns a L<< AI::Ollama::CreateModelResponse >>.
 
 =cut
 
@@ -268,22 +284,28 @@ sub createModel( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = Future::Mojo->new()->then( sub( $tx ) {
+    my $r1 = Future::Mojo->new();
+    my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            if( $resp->content_type eq 'application/x-ndjson' ) {
+            my $ct = $resp->headers->content_type;
+            $ct =~ s/;\s+.*//;
+            if( $ct eq 'application/x-ndjson' ) {
                 my $payload = $resp->body(); # application/x-ndjson
                 # create CreateModelResponse from $resp
+                return Future::Mojo->done(
+                    AI::Ollama::CreateModelResponse->new($payload),
+                );
             }
         }
     });
 
     # Start our transaction
-    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
-        $res->done( $tx );
-        undef $_tx;
+    $tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $r1->resolve( $tx );
+        undef $r1;
     });
 
     return $res
@@ -292,6 +314,7 @@ sub createModel( $self, %options ) {
 =head2 C<< deleteModel >>
 
 Delete a model and its data.
+
 
 =cut
 
@@ -317,19 +340,20 @@ sub deleteModel( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = Future::Mojo->new()->then( sub( $tx ) {
+    my $r1 = Future::Mojo->new();
+    my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            return Future->done($resp);
+            return Future::Mojo->done($resp);
         }
     });
 
     # Start our transaction
-    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
-        $res->done( $tx );
-        undef $_tx;
+    $tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $r1->resolve( $tx );
+        undef $r1;
     });
 
     return $res
@@ -338,6 +362,8 @@ sub deleteModel( $self, %options ) {
 =head2 C<< generateEmbedding >>
 
 Generate embeddings from a model.
+
+Returns a L<< AI::Ollama::GenerateEmbeddingResponse >>.
 
 =cut
 
@@ -363,22 +389,28 @@ sub generateEmbedding( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = Future::Mojo->new()->then( sub( $tx ) {
+    my $r1 = Future::Mojo->new();
+    my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            if( $resp->content_type eq 'application/json' ) {
+            my $ct = $resp->headers->content_type;
+            $ct =~ s/;\s+.*//;
+            if( $ct eq 'application/json' ) {
                 my $payload = $resp->json();
                 # create GenerateEmbeddingResponse from $resp
+                return Future::Mojo->done(
+                    AI::Ollama::GenerateEmbeddingResponse->new($payload),
+                );
             }
         }
     });
 
     # Start our transaction
-    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
-        $res->done( $tx );
-        undef $_tx;
+    $tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $r1->resolve( $tx );
+        undef $r1;
     });
 
     return $res
@@ -387,6 +419,8 @@ sub generateEmbedding( $self, %options ) {
 =head2 C<< generateCompletion >>
 
 Generate a response for a given prompt with a provided model.
+
+Returns a L<< AI::Ollama::GenerateCompletionResponse >>.
 
 =cut
 
@@ -412,22 +446,28 @@ sub generateCompletion( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = Future::Mojo->new()->then( sub( $tx ) {
+    my $r1 = Future::Mojo->new();
+    my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            if( $resp->content_type eq 'application/x-ndjson' ) {
+            my $ct = $resp->headers->content_type;
+            $ct =~ s/;\s+.*//;
+            if( $ct eq 'application/x-ndjson' ) {
                 my $payload = $resp->body(); # application/x-ndjson
                 # create GenerateCompletionResponse from $resp
+                return Future::Mojo->done(
+                    AI::Ollama::GenerateCompletionResponse->new($payload),
+                );
             }
         }
     });
 
     # Start our transaction
-    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
-        $res->done( $tx );
-        undef $_tx;
+    $tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $r1->resolve( $tx );
+        undef $r1;
     });
 
     return $res
@@ -436,6 +476,8 @@ sub generateCompletion( $self, %options ) {
 =head2 C<< pullModel >>
 
 Download a model from the ollama library.
+
+Returns a L<< AI::Ollama::PullModelResponse >>.
 
 =cut
 
@@ -461,22 +503,28 @@ sub pullModel( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = Future::Mojo->new()->then( sub( $tx ) {
+    my $r1 = Future::Mojo->new();
+    my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            if( $resp->content_type eq 'application/json' ) {
+            my $ct = $resp->headers->content_type;
+            $ct =~ s/;\s+.*//;
+            if( $ct eq 'application/json' ) {
                 my $payload = $resp->json();
                 # create PullModelResponse from $resp
+                return Future::Mojo->done(
+                    AI::Ollama::PullModelResponse->new($payload),
+                );
             }
         }
     });
 
     # Start our transaction
-    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
-        $res->done( $tx );
-        undef $_tx;
+    $tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $r1->resolve( $tx );
+        undef $r1;
     });
 
     return $res
@@ -485,6 +533,8 @@ sub pullModel( $self, %options ) {
 =head2 C<< pushModel >>
 
 Upload a model to a model library.
+
+Returns a L<< AI::Ollama::PushModelResponse >>.
 
 =cut
 
@@ -510,22 +560,28 @@ sub pushModel( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = Future::Mojo->new()->then( sub( $tx ) {
+    my $r1 = Future::Mojo->new();
+    my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            if( $resp->content_type eq 'application/json' ) {
+            my $ct = $resp->headers->content_type;
+            $ct =~ s/;\s+.*//;
+            if( $ct eq 'application/json' ) {
                 my $payload = $resp->json();
                 # create PushModelResponse from $resp
+                return Future::Mojo->done(
+                    AI::Ollama::PushModelResponse->new($payload),
+                );
             }
         }
     });
 
     # Start our transaction
-    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
-        $res->done( $tx );
-        undef $_tx;
+    $tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $r1->resolve( $tx );
+        undef $r1;
     });
 
     return $res
@@ -534,6 +590,8 @@ sub pushModel( $self, %options ) {
 =head2 C<< showModelInfo >>
 
 Show details about a model including modelfile, template, parameters, license, and system prompt.
+
+Returns a L<< AI::Ollama::ModelInfo >>.
 
 =cut
 
@@ -559,22 +617,28 @@ sub showModelInfo( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = Future::Mojo->new()->then( sub( $tx ) {
+    my $r1 = Future::Mojo->new();
+    my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            if( $resp->content_type eq 'application/json' ) {
+            my $ct = $resp->headers->content_type;
+            $ct =~ s/;\s+.*//;
+            if( $ct eq 'application/json' ) {
                 my $payload = $resp->json();
                 # create ModelInfo from $resp
+                return Future::Mojo->done(
+                    AI::Ollama::ModelInfo->new($payload),
+                );
             }
         }
     });
 
     # Start our transaction
-    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
-        $res->done( $tx );
-        undef $_tx;
+    $tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $r1->resolve( $tx );
+        undef $r1;
     });
 
     return $res
@@ -583,6 +647,8 @@ sub showModelInfo( $self, %options ) {
 =head2 C<< listModels >>
 
 List models that are available locally.
+
+Returns a L<< AI::Ollama::ModelsResponse >>.
 
 =cut
 
@@ -606,22 +672,28 @@ sub listModels( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = Future::Mojo->new()->then( sub( $tx ) {
+    my $r1 = Future::Mojo->new();
+    my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            if( $resp->content_type eq 'application/json' ) {
+            my $ct = $resp->headers->content_type;
+            $ct =~ s/;\s+.*//;
+            if( $ct eq 'application/json' ) {
                 my $payload = $resp->json();
                 # create ModelsResponse from $resp
+                return Future::Mojo->done(
+                    AI::Ollama::ModelsResponse->new($payload),
+                );
             }
         }
     });
 
     # Start our transaction
-    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
-        $res->done( $tx );
-        undef $_tx;
+    $tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $r1->resolve( $tx );
+        undef $r1;
     });
 
     return $res
