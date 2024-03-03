@@ -367,3 +367,4 @@ __END__
     template
 [ ] List method parameters and result type if known
 [ ] (optionally) check that the created module file(s) compile
+[ ] Split out the templates into separate files
