@@ -10,6 +10,7 @@ use YAML::PP;
 
 GetOptions(
     'package|p=s' => \my $package,
+    'force|f' => \my $force,
 );
 $package //= 'AI::Ollama';
 
@@ -54,7 +55,7 @@ sub update_file( %options ) {
 
     my $content;
     if( -f $filename ) {
-        return if $keep_existing;
+        return if $keep_existing and not $force;
 
         open my $fh, "<$encoding", $filename
             or die "Couldn't read '$filename': $!";
