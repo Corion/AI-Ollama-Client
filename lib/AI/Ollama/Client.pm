@@ -129,7 +129,8 @@ Returns a L<< AI::Ollama::PushModelResponse >>.
 
 =head2 C<< showModelInfo >>
 
-  $client->showModelInfo();
+  my $info = $client->showModelInfo()->get;
+  say $info->modelfile;
 
 Show details about a model including modelfile, template, parameters, license, and system prompt.
 
@@ -139,7 +140,10 @@ Returns a L<< AI::Ollama::ModelInfo >>.
 
 =head2 C<< listModels >>
 
-  $client->listModels();
+  my $info = $client->listModels()->get;
+  for my $model ($info->models->@*) {
+      say $model->model; # llama2:latest
+  }
 
 List models that are available locally.
 
