@@ -57,6 +57,7 @@ has 'server' => (
 Check to see if a blob exists on the Ollama server which is useful when creating models.
 
 
+
 =cut
 
 sub checkBlob( $self, %options ) {
@@ -64,6 +65,7 @@ sub checkBlob( $self, %options ) {
     my $method = 'HEAD';
     my $url = $self->server . '/blobs/{digest}';
 
+              # don't know how to handle this ...
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
@@ -107,6 +109,10 @@ sub checkBlob( $self, %options ) {
   my $res = $client->createBlob()->get;
 
 Create a blob from a file. Returns the server file path.
+
+
+=head3 Options
+
 
 
 =cut
@@ -158,6 +164,69 @@ sub createBlob( $self, %options ) {
   my $res = $client->generateChatCompletion()->get;
 
 Generate the next message in a chat with a provided model.
+
+
+=head3 Options
+
+=over 4
+
+= C<< format >>
+
+The format to return a response in. Currently the only accepted value is json.
+
+Enable JSON mode by setting the format parameter to json. This will structure the response as valid JSON.
+
+Note: it's important to instruct the model to use JSON in the prompt. Otherwise, the model may generate large amounts whitespace.
+
+=back
+
+=over 4
+
+= C<< keep_alive >>
+
+How long (in minutes) to keep the model loaded in memory.
+
+- If set to a positive duration (e.g. 20), the model will stay loaded for the provided duration.
+- If set to a negative duration (e.g. -1), the model will stay loaded indefinitely.
+- If set to 0, the model will be unloaded immediately once finished.
+- If not set, the model will stay loaded for 5 minutes by default
+
+=back
+
+=over 4
+
+= C<< messages >>
+
+The messages of the chat, this can be used to keep a chat memory
+
+=back
+
+=over 4
+
+= C<< model >>
+
+The model name.
+
+Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
+
+=back
+
+=over 4
+
+= C<< options >>
+
+Additional model parameters listed in the documentation for the Modelfile such as `temperature`.
+
+=back
+
+=over 4
+
+= C<< stream >>
+
+If `false` the response will be returned as a single response object, otherwise the response will be streamed as a series of objects.
+
+=back
+
 
 Returns a L<< AI::Ollama::GenerateChatCompletionResponse >>.
 
@@ -218,6 +287,26 @@ sub generateChatCompletion( $self, %options ) {
 Creates a model with another name from an existing model.
 
 
+=head3 Options
+
+=over 4
+
+= C<< destination >>
+
+Name of the new model.
+
+=back
+
+=over 4
+
+= C<< source >>
+
+Name of the model to copy.
+
+=back
+
+
+
 =cut
 
 sub copyModel( $self, %options ) {
@@ -266,6 +355,36 @@ sub copyModel( $self, %options ) {
   my $res = $client->createModel()->get;
 
 Create a model from a Modelfile.
+
+
+=head3 Options
+
+=over 4
+
+= C<< modelfile >>
+
+The contents of the Modelfile.
+
+=back
+
+=over 4
+
+= C<< name >>
+
+The model name.
+
+Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
+
+=back
+
+=over 4
+
+= C<< stream >>
+
+If `false` the response will be returned as a single response object, otherwise the response will be streamed as a series of objects.
+
+=back
+
 
 Returns a L<< AI::Ollama::CreateModelResponse >>.
 
@@ -326,6 +445,20 @@ sub createModel( $self, %options ) {
 Delete a model and its data.
 
 
+=head3 Options
+
+=over 4
+
+= C<< name >>
+
+The model name.
+
+Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
+
+=back
+
+
+
 =cut
 
 sub deleteModel( $self, %options ) {
@@ -374,6 +507,36 @@ sub deleteModel( $self, %options ) {
   my $res = $client->generateEmbedding()->get;
 
 Generate embeddings from a model.
+
+
+=head3 Options
+
+=over 4
+
+= C<< model >>
+
+The model name.
+
+Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
+
+=back
+
+=over 4
+
+= C<< options >>
+
+Additional model parameters listed in the documentation for the Modelfile such as `temperature`.
+
+=back
+
+=over 4
+
+= C<< prompt >>
+
+Text to generate embeddings for.
+
+=back
+
 
 Returns a L<< AI::Ollama::GenerateEmbeddingResponse >>.
 
@@ -433,6 +596,111 @@ sub generateEmbedding( $self, %options ) {
 
 Generate a response for a given prompt with a provided model.
 
+
+=head3 Options
+
+=over 4
+
+= C<< context >>
+
+The context parameter returned from a previous request to [generateCompletion], this can be used to keep a short conversational memory.
+
+=back
+
+=over 4
+
+= C<< format >>
+
+The format to return a response in. Currently the only accepted value is json.
+
+Enable JSON mode by setting the format parameter to json. This will structure the response as valid JSON.
+
+Note: it's important to instruct the model to use JSON in the prompt. Otherwise, the model may generate large amounts whitespace.
+
+=back
+
+=over 4
+
+= C<< images >>
+
+(optional) a list of Base64-encoded images to include in the message (for multimodal models such as llava)
+
+=back
+
+=over 4
+
+= C<< keep_alive >>
+
+How long (in minutes) to keep the model loaded in memory.
+
+- If set to a positive duration (e.g. 20), the model will stay loaded for the provided duration.
+- If set to a negative duration (e.g. -1), the model will stay loaded indefinitely.
+- If set to 0, the model will be unloaded immediately once finished.
+- If not set, the model will stay loaded for 5 minutes by default
+
+=back
+
+=over 4
+
+= C<< model >>
+
+The model name.
+
+Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
+
+=back
+
+=over 4
+
+= C<< options >>
+
+Additional model parameters listed in the documentation for the Modelfile such as `temperature`.
+
+=back
+
+=over 4
+
+= C<< prompt >>
+
+The prompt to generate a response.
+
+=back
+
+=over 4
+
+= C<< raw >>
+
+If `true` no formatting will be applied to the prompt and no context will be returned.
+
+You may choose to use the `raw` parameter if you are specifying a full templated prompt in your request to the API, and are managing history yourself.
+
+=back
+
+=over 4
+
+= C<< stream >>
+
+If `false` the response will be returned as a single response object, otherwise the response will be streamed as a series of objects.
+
+=back
+
+=over 4
+
+= C<< system >>
+
+The system prompt to (overrides what is defined in the Modelfile).
+
+=back
+
+=over 4
+
+= C<< template >>
+
+The full prompt or prompt template (overrides what is defined in the Modelfile).
+
+=back
+
+
 Returns a L<< AI::Ollama::GenerateCompletionResponse >>.
 
 =cut
@@ -490,6 +758,38 @@ sub generateCompletion( $self, %options ) {
   my $res = $client->pullModel()->get;
 
 Download a model from the ollama library.
+
+
+=head3 Options
+
+=over 4
+
+= C<< insecure >>
+
+Allow insecure connections to the library.
+
+Only use this if you are pulling from your own library during development.
+
+=back
+
+=over 4
+
+= C<< name >>
+
+The model name.
+
+Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
+
+=back
+
+=over 4
+
+= C<< stream >>
+
+If `false` the response will be returned as a single response object, otherwise the response will be streamed as a series of objects.
+
+=back
+
 
 Returns a L<< AI::Ollama::PullModelResponse >>.
 
@@ -549,6 +849,36 @@ sub pullModel( $self, %options ) {
 
 Upload a model to a model library.
 
+
+=head3 Options
+
+=over 4
+
+= C<< insecure >>
+
+Allow insecure connections to the library.
+
+Only use this if you are pushing to your library during development.
+
+=back
+
+=over 4
+
+= C<< name >>
+
+The name of the model to push in the form of <namespace>/<model>:<tag>.
+
+=back
+
+=over 4
+
+= C<< stream >>
+
+If `false` the response will be returned as a single response object, otherwise the response will be streamed as a series of objects.
+
+=back
+
+
 Returns a L<< AI::Ollama::PushModelResponse >>.
 
 =cut
@@ -606,6 +936,20 @@ sub pushModel( $self, %options ) {
   my $res = $client->showModelInfo()->get;
 
 Show details about a model including modelfile, template, parameters, license, and system prompt.
+
+
+=head3 Options
+
+=over 4
+
+= C<< name >>
+
+The model name.
+
+Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
+
+=back
+
 
 Returns a L<< AI::Ollama::ModelInfo >>.
 
@@ -665,6 +1009,7 @@ sub showModelInfo( $self, %options ) {
 
 List models that are available locally.
 
+
 Returns a L<< AI::Ollama::ModelsResponse >>.
 
 =cut
@@ -674,6 +1019,7 @@ sub listModels( $self, %options ) {
     my $method = 'GET';
     my $url = $self->server . '/tags';
 
+              # don't know how to handle this ...
     my $tx = $self->ua->build_tx(
         $method => $url,
         {

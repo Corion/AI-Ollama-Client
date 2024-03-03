@@ -166,6 +166,28 @@ has 'server' => (
 
 <%= $elt->{summary} =~ s/\s*$//r %>
 
+%# Add the parameters:
+% (my $ct) = keys $elt->{requestBody}->{content}->%*;
+% my $type = $elt->{requestBody}->{content}->{$ct}->{schema};
+% if( $type ) {
+
+=head3 Options
+
+%     for my $prop (sort keys $type->{properties}->%*) {
+%         my $p = $type->{properties}->{$prop};
+=over 4
+
+= C<< <%= $prop %> >>
+
+% if( $p->{description} ) {
+<%= $p->{description} =~ s/\s*$//r %>
+
+% }
+=back
+
+%     }
+% }
+
 % for my $code (sort keys $elt->{responses}->%*) {
 %     my $info = $elt->{responses}->{ $code };
 %        if( my $content = $info->{content} ) {
