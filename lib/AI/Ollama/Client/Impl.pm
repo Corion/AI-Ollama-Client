@@ -76,17 +76,23 @@ sub checkBlob( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = $self->ua->start_p($tx)->then(sub($tx) {
-        my $res = $tx->res;
+    my $res = Future::Mojo->new()->then( sub( $tx ) {
+        my $resp = $tx->res;
 
-        if( $res->code == 200 ) {
+        if( $resp->code == 200 ) {
             # Blob exists on the server
-            return $res;
+            return Future->done($resp);
         }
-        if( $res->code == 404 ) {
+        if( $resp->code == 404 ) {
             # Blob was not found
-            return $res;
+            return Future->done($resp);
         }
+    });
+
+    # Start our transaction
+    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $res->done( $tx );
+        undef $_tx;
     });
 
     return $res
@@ -121,13 +127,19 @@ sub createBlob( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = $self->ua->start_p($tx)->then(sub($tx) {
-        my $res = $tx->res;
+    my $res = Future::Mojo->new()->then( sub( $tx ) {
+        my $resp = $tx->res;
 
-        if( $res->code == 201 ) {
+        if( $resp->code == 201 ) {
             # Blob was successfully created
-            return $res;
+            return Future->done($resp);
         }
+    });
+
+    # Start our transaction
+    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $res->done( $tx );
+        undef $_tx;
     });
 
     return $res
@@ -161,16 +173,22 @@ sub generateChatCompletion( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = $self->ua->start_p($tx)->then(sub($tx) {
-        my $res = $tx->res;
+    my $res = Future::Mojo->new()->then( sub( $tx ) {
+        my $resp = $tx->res;
 
-        if( $res->code == 200 ) {
+        if( $resp->code == 200 ) {
             # Successful operation.
-            if( $res->content_type eq 'HASH(0x5597894e9000)' ) {
+            if( $resp->content_type eq 'HASH(0x557e6888bec0)' ) {
             }
-            if( $res->content_type eq 'application/x-ndjson' ) {
+            if( $resp->content_type eq 'application/x-ndjson' ) {
             }
         }
+    });
+
+    # Start our transaction
+    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $res->done( $tx );
+        undef $_tx;
     });
 
     return $res
@@ -204,13 +222,19 @@ sub copyModel( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = $self->ua->start_p($tx)->then(sub($tx) {
-        my $res = $tx->res;
+    my $res = Future::Mojo->new()->then( sub( $tx ) {
+        my $resp = $tx->res;
 
-        if( $res->code == 200 ) {
+        if( $resp->code == 200 ) {
             # Successful operation.
-            return $res;
+            return Future->done($resp);
         }
+    });
+
+    # Start our transaction
+    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $res->done( $tx );
+        undef $_tx;
     });
 
     return $res
@@ -244,16 +268,22 @@ sub createModel( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = $self->ua->start_p($tx)->then(sub($tx) {
-        my $res = $tx->res;
+    my $res = Future::Mojo->new()->then( sub( $tx ) {
+        my $resp = $tx->res;
 
-        if( $res->code == 200 ) {
+        if( $resp->code == 200 ) {
             # Successful operation.
-            if( $res->content_type eq 'HASH(0x5597894ff5c0)' ) {
+            if( $resp->content_type eq 'HASH(0x557e688a2730)' ) {
             }
-            if( $res->content_type eq 'application/x-ndjson' ) {
+            if( $resp->content_type eq 'application/x-ndjson' ) {
             }
         }
+    });
+
+    # Start our transaction
+    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $res->done( $tx );
+        undef $_tx;
     });
 
     return $res
@@ -287,13 +317,19 @@ sub deleteModel( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = $self->ua->start_p($tx)->then(sub($tx) {
-        my $res = $tx->res;
+    my $res = Future::Mojo->new()->then( sub( $tx ) {
+        my $resp = $tx->res;
 
-        if( $res->code == 200 ) {
+        if( $resp->code == 200 ) {
             # Successful operation.
-            return $res;
+            return Future->done($resp);
         }
+    });
+
+    # Start our transaction
+    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $res->done( $tx );
+        undef $_tx;
     });
 
     return $res
@@ -327,16 +363,22 @@ sub generateEmbedding( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = $self->ua->start_p($tx)->then(sub($tx) {
-        my $res = $tx->res;
+    my $res = Future::Mojo->new()->then( sub( $tx ) {
+        my $resp = $tx->res;
 
-        if( $res->code == 200 ) {
+        if( $resp->code == 200 ) {
             # Successful operation.
-            if( $res->content_type eq 'HASH(0x5597894f55b8)' ) {
+            if( $resp->content_type eq 'HASH(0x557e68898338)' ) {
             }
-            if( $res->content_type eq 'application/json' ) {
+            if( $resp->content_type eq 'application/json' ) {
             }
         }
+    });
+
+    # Start our transaction
+    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $res->done( $tx );
+        undef $_tx;
     });
 
     return $res
@@ -370,16 +412,22 @@ sub generateCompletion( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = $self->ua->start_p($tx)->then(sub($tx) {
-        my $res = $tx->res;
+    my $res = Future::Mojo->new()->then( sub( $tx ) {
+        my $resp = $tx->res;
 
-        if( $res->code == 200 ) {
+        if( $resp->code == 200 ) {
             # Successful operation.
-            if( $res->content_type eq 'HASH(0x5597894de3b0)' ) {
+            if( $resp->content_type eq 'HASH(0x557e68881020)' ) {
             }
-            if( $res->content_type eq 'application/x-ndjson' ) {
+            if( $resp->content_type eq 'application/x-ndjson' ) {
             }
         }
+    });
+
+    # Start our transaction
+    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $res->done( $tx );
+        undef $_tx;
     });
 
     return $res
@@ -413,16 +461,22 @@ sub pullModel( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = $self->ua->start_p($tx)->then(sub($tx) {
-        my $res = $tx->res;
+    my $res = Future::Mojo->new()->then( sub( $tx ) {
+        my $resp = $tx->res;
 
-        if( $res->code == 200 ) {
+        if( $resp->code == 200 ) {
             # Successful operation.
-            if( $res->content_type eq 'HASH(0x559789535b70)' ) {
+            if( $resp->content_type eq 'HASH(0x557e688d8850)' ) {
             }
-            if( $res->content_type eq 'application/json' ) {
+            if( $resp->content_type eq 'application/json' ) {
             }
         }
+    });
+
+    # Start our transaction
+    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $res->done( $tx );
+        undef $_tx;
     });
 
     return $res
@@ -456,16 +510,22 @@ sub pushModel( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = $self->ua->start_p($tx)->then(sub($tx) {
-        my $res = $tx->res;
+    my $res = Future::Mojo->new()->then( sub( $tx ) {
+        my $resp = $tx->res;
 
-        if( $res->code == 200 ) {
+        if( $resp->code == 200 ) {
             # Successful operation.
-            if( $res->content_type eq 'HASH(0x559789543068)' ) {
+            if( $resp->content_type eq 'HASH(0x557e688e5d98)' ) {
             }
-            if( $res->content_type eq 'application/json' ) {
+            if( $resp->content_type eq 'application/json' ) {
             }
         }
+    });
+
+    # Start our transaction
+    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $res->done( $tx );
+        undef $_tx;
     });
 
     return $res
@@ -499,16 +559,22 @@ sub showModelInfo( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = $self->ua->start_p($tx)->then(sub($tx) {
-        my $res = $tx->res;
+    my $res = Future::Mojo->new()->then( sub( $tx ) {
+        my $resp = $tx->res;
 
-        if( $res->code == 200 ) {
+        if( $resp->code == 200 ) {
             # Successful operation.
-            if( $res->content_type eq 'HASH(0x559789514138)' ) {
+            if( $resp->content_type eq 'HASH(0x557e688b7328)' ) {
             }
-            if( $res->content_type eq 'application/json' ) {
+            if( $resp->content_type eq 'application/json' ) {
             }
         }
+    });
+
+    # Start our transaction
+    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $res->done( $tx );
+        undef $_tx;
     });
 
     return $res
@@ -540,16 +606,22 @@ sub listModels( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = $self->ua->start_p($tx)->then(sub($tx) {
-        my $res = $tx->res;
+    my $res = Future::Mojo->new()->then( sub( $tx ) {
+        my $resp = $tx->res;
 
-        if( $res->code == 200 ) {
+        if( $resp->code == 200 ) {
             # Successful operation.
-            if( $res->content_type eq 'HASH(0x5597895081f0)' ) {
+            if( $resp->content_type eq 'HASH(0x557e688ab1a0)' ) {
             }
-            if( $res->content_type eq 'application/json' ) {
+            if( $resp->content_type eq 'application/json' ) {
             }
         }
+    });
+
+    # Start our transaction
+    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $res->done( $tx );
+        undef $_tx;
     });
 
     return $res

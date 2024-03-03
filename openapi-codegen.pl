@@ -125,6 +125,8 @@ use YAML::PP;
 use Mojo::UserAgent;
 use OpenAPI::Modern;
 
+use Future::Mojo;
+
 % for my $submodule (sort keys $schema->{components}->{schemas}->%*) {
 %     my $info = $schema->{components}->{schemas}->{$submodule};
 %     if( $info->{type} eq 'object' ) {
@@ -198,26 +200,32 @@ sub <%= $method->{name} %>( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $res = $self->ua->start_p($tx)->then(sub($tx) {
-        my $res = $tx->res;
+    my $res = Future::Mojo->new()->then( sub( $tx ) {
+        my $resp = $tx->res;
 
 %# Should this be its own subroutine instead?!
 % for my $code (sort keys $elt->{responses}->%*) {
 %     my $info = $elt->{responses}->{ $code };
-        if( $res->code == <%= $code %> ) {
+        if( $resp->code == <%= $code %> ) {
             # <%= $info->{description} %>
 %       # Check the content type
 %       # Will we always have a content type?!
 %       if( $info->{content} ) {
 %           for my $ct (sort $info->{content}->%*) {
-            if( $res->content_type eq '<%= $ct %>' ) {
+            if( $resp->content_type eq '<%= $ct %>' ) {
             }
 %           }
 %       } else { # we don't know how to handle this, so pass $res
-            return $res;
+            return Future->done($resp);
 %       }
         }
 % }
+    });
+
+    # Start our transaction
+    my $_tx; $_tx = $self->ua->start_p($tx)->then(sub($tx) {
+        $res->done( $tx );
+        undef $_tx;
     });
 
     return $res

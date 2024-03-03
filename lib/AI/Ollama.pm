@@ -129,13 +129,16 @@ use experimental 'signatures';
 use AI::Ollama::Client;
 
 my $ol = AI::Ollama::Client->new(
-    server => 'https://192.168.1.97:11434/api',
+    server => 'http://192.168.1.97:11434/api',
 );
 
 my $tx = $ol->generateCompletion(
     model => 'llama2',
     prompt => 'How are you?',
-);
+)->then( sub ($res) {
+    use Data::Dumper;
+    warn Dumper $res;
+});
 
 sub decode_ndjson( $stream, $r_buffer ) {
     if( $$r_buffer ) {
@@ -155,21 +158,20 @@ sub decode_ndjson( $stream, $r_buffer ) {
     return @res
 }
 
-my $buffer;
-$tx->res->on( progress => sub($stream) {
-    for my $elt (decode_ndjson( $stream->body, \$buffer )) {
-        local $| = 1;
-        if( $elt->{response} eq "\n" ) {
-            print "\r";
-        } else {
-            print $elt->{response};
-        }
-        if( $elt->{done} ) {
-            print "\n";
-            Mojo::IOLoop->stop_gracefully;
-        };
-    };
-});
+#my $buffer;
+#$tx->res->on( progress => sub($stream) {
+#    for my $elt (decode_ndjson( $stream->body, \$buffer )) {
+#        local $| = 1;
+#        if( $elt->{response} eq "\n" ) {
+#            print "\r";
+#        } else {
+#            print $elt->{response};
+#        }
+#        if( $elt->{done} ) {
+#            print "\n";
+#            Mojo::IOLoop->stop_gracefully;
+#        };
+#    };
+#});
 
-$tx = $ol->ua->start_p($tx);
 Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
