@@ -46,6 +46,7 @@ around 'checkBlob' => sub ( $super, $self, %options ) {
 
 Create a blob from a file. Returns the server file path.
 
+
 =cut
 
 =head2 C<< generateChatCompletion >>
@@ -53,6 +54,8 @@ Create a blob from a file. Returns the server file path.
   $client->generateChatCompletion();
 
 Generate the next message in a chat with a provided model.
+
+Returns a L<< AI::Ollama::GenerateChatCompletionResponse >>.
 
 =cut
 
@@ -62,6 +65,7 @@ Generate the next message in a chat with a provided model.
 
 Creates a model with another name from an existing model.
 
+
 =cut
 
 =head2 C<< createModel >>
@@ -69,6 +73,8 @@ Creates a model with another name from an existing model.
   $client->createModel();
 
 Create a model from a Modelfile.
+
+Returns a L<< AI::Ollama::CreateModelResponse >>.
 
 =cut
 
@@ -78,6 +84,7 @@ Create a model from a Modelfile.
 
 Delete a model and its data.
 
+
 =cut
 
 =head2 C<< generateEmbedding >>
@@ -85,6 +92,8 @@ Delete a model and its data.
   $client->generateEmbedding();
 
 Generate embeddings from a model.
+
+Returns a L<< AI::Ollama::GenerateEmbeddingResponse >>.
 
 =cut
 
@@ -94,6 +103,8 @@ Generate embeddings from a model.
 
 Generate a response for a given prompt with a provided model.
 
+Returns a L<< AI::Ollama::GenerateCompletionResponse >>.
+
 =cut
 
 =head2 C<< pullModel >>
@@ -101,6 +112,8 @@ Generate a response for a given prompt with a provided model.
   $client->pullModel();
 
 Download a model from the ollama library.
+
+Returns a L<< AI::Ollama::PullModelResponse >>.
 
 =cut
 
@@ -110,6 +123,8 @@ Download a model from the ollama library.
 
 Upload a model to a model library.
 
+Returns a L<< AI::Ollama::PushModelResponse >>.
+
 =cut
 
 =head2 C<< showModelInfo >>
@@ -118,6 +133,8 @@ Upload a model to a model library.
 
 Show details about a model including modelfile, template, parameters, license, and system prompt.
 
+Returns a L<< AI::Ollama::ModelInfo >>.
+
 =cut
 
 =head2 C<< listModels >>
@@ -125,6 +142,8 @@ Show details about a model including modelfile, template, parameters, license, a
   $client->listModels();
 
 List models that are available locally.
+
+Returns a L<< AI::Ollama::ModelsResponse >>.
 
 =cut
 
