@@ -51,9 +51,12 @@ sub update_file( %options ) {
     my $new_content = delete $options{ content };
     my $keep_existing = $options{ keep_existing };
     my $encoding = $options{ encoding } // ':raw:encoding(UTF-8)';
+
     my $content;
     if( -f $filename ) {
-        open my $fh, '<:raw:encoding(UTF-8)', $filename
+        return if $keep_existing;
+
+        open my $fh, "<$encoding", $filename
             or die "Couldn't read '$filename': $!";
         local $/;
         $content = <$fh>;
@@ -61,7 +64,7 @@ sub update_file( %options ) {
 
     if( $content ne $new_content ) {
         make_path( dirname $filename ); # just to be sure
-        if( open my $fh, '>:raw:encoding(UTF-8)', $filename ) {
+        if( open my $fh, ">$encoding", $filename ) {
             print $fh $new_content;
         } else {
             warn "Couldn't (re)write '$filename': $!";
