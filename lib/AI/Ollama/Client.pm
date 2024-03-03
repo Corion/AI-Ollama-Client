@@ -3,7 +3,7 @@ use 5.020;
 use Moo 2;
 use experimental 'signatures';
 
-use parent 'AI::Ollama::Client::Impl';
+extends 'AI::Ollama::Client::Impl';
 
 =head1 NAME
 
@@ -30,15 +30,15 @@ Check to see if a blob exists on the Ollama server which is useful when creating
 
 =cut
 
-sub checkBlob( $self, %options ) {
-    my $res = $self->SUPER::checkBlob( %options )->then( sub( $res ) {
+around 'checkBlob' => sub ( $super, $self, %options ) {
+    $super->( $self, %options )->then( sub( $res ) {
         if( $res->code =~ /^2\d\d$/ ) {
             return Future->done( 1 )
         } else {
             return Future->done( 0 )
         }
     });
-}
+};
 
 =head2 C<< createBlob >>
 
