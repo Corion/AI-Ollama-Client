@@ -52,6 +52,8 @@ has 'server' => (
 
 =head2 C<< checkBlob >>
 
+  my $res = $client->checkBlob()->get;
+
 Check to see if a blob exists on the Ollama server which is useful when creating models.
 
 
@@ -102,6 +104,8 @@ sub checkBlob( $self, %options ) {
 
 =head2 C<< createBlob >>
 
+  my $res = $client->createBlob()->get;
+
 Create a blob from a file. Returns the server file path.
 
 
@@ -150,6 +154,8 @@ sub createBlob( $self, %options ) {
 }
 
 =head2 C<< generateChatCompletion >>
+
+  my $res = $client->generateChatCompletion()->get;
 
 Generate the next message in a chat with a provided model.
 
@@ -207,6 +213,8 @@ sub generateChatCompletion( $self, %options ) {
 
 =head2 C<< copyModel >>
 
+  my $res = $client->copyModel()->get;
+
 Creates a model with another name from an existing model.
 
 
@@ -254,6 +262,8 @@ sub copyModel( $self, %options ) {
 }
 
 =head2 C<< createModel >>
+
+  my $res = $client->createModel()->get;
 
 Create a model from a Modelfile.
 
@@ -311,6 +321,8 @@ sub createModel( $self, %options ) {
 
 =head2 C<< deleteModel >>
 
+  my $res = $client->deleteModel()->get;
+
 Delete a model and its data.
 
 
@@ -358,6 +370,8 @@ sub deleteModel( $self, %options ) {
 }
 
 =head2 C<< generateEmbedding >>
+
+  my $res = $client->generateEmbedding()->get;
 
 Generate embeddings from a model.
 
@@ -415,6 +429,8 @@ sub generateEmbedding( $self, %options ) {
 
 =head2 C<< generateCompletion >>
 
+  my $res = $client->generateCompletion()->get;
+
 Generate a response for a given prompt with a provided model.
 
 Returns a L<< AI::Ollama::GenerateCompletionResponse >>.
@@ -470,6 +486,8 @@ sub generateCompletion( $self, %options ) {
 }
 
 =head2 C<< pullModel >>
+
+  my $res = $client->pullModel()->get;
 
 Download a model from the ollama library.
 
@@ -527,6 +545,8 @@ sub pullModel( $self, %options ) {
 
 =head2 C<< pushModel >>
 
+  my $res = $client->pushModel()->get;
+
 Upload a model to a model library.
 
 Returns a L<< AI::Ollama::PushModelResponse >>.
@@ -583,6 +603,8 @@ sub pushModel( $self, %options ) {
 
 =head2 C<< showModelInfo >>
 
+  my $res = $client->showModelInfo()->get;
+
 Show details about a model including modelfile, template, parameters, license, and system prompt.
 
 Returns a L<< AI::Ollama::ModelInfo >>.
@@ -638,6 +660,8 @@ sub showModelInfo( $self, %options ) {
 }
 
 =head2 C<< listModels >>
+
+  my $res = $client->listModels()->get;
 
 List models that are available locally.
 

@@ -162,6 +162,8 @@ has 'server' => (
 % my $elt = $method->{elt};
 =head2 C<< <%= $method->{name} %> >>
 
+  my $res = $client-><%= $method->{name} %>()->get;
+
 <%= $elt->{summary} =~ s/\s*$//r %>
 
 % for my $code (sort keys $elt->{responses}->%*) {
@@ -298,7 +300,7 @@ extends '<%= $prefix %>::<%= $name %>::Impl';
 % my $elt = $method->{elt};
 =head2 C<< <%= $method->{name} %> >>
 
-  $client-><%= $method->{name} %>();
+  my $res = $client-><%= $method->{name} %>()->get;
 
 <%= $elt->{summary} =~ s/\s*$//r; %>
 
