@@ -227,6 +227,40 @@ sub <%= $method->{name} %>( $self, %options ) {
 1;
 __CLIENT__
 
+$template{client} = <<'__CLIENT__';
+package <%= $prefix %>::<%= $name %> 0.01;
+use 5.020;
+use Moo 2;
+use experimental 'signatures';
+
+use parent '<%= $prefix %>::<%= $name %>::Impl';
+
+=head1 NAME
+
+=head1 SYNOPSIS
+
+  use 5.020;
+  use <%= $prefix %>::<%= $name %>;
+
+  my $client = <%= $prefix %>::<%= $name %>->new(
+      server => '<%= $schema->{servers}->[0]->{url} // "https://example.com/" %>',
+  );
+  my $res = $client->someMethod()->get;
+  say $res;
+
+=head1 METHODS
+
+% for my $method ($methods->@*) {
+% my $elt = $method->{elt};
+=head2 C<< <%= $method->{name} %> >>
+
+<%= $elt->{summary} =~ s/\s*$//r %>
+
+=cut
+
+1;
+__CLIENT__
+
 my $mt = Mojo::Template->new->vars(1);
 
 my %options = (
