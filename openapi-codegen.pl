@@ -8,6 +8,12 @@ use Mojo::Template;
 use JSON::Pointer;
 use YAML::PP;
 
+=head1 NAME
+
+openapi-codegen.pl - create and maintain (client) libraries from OpenAPI / Swagger spec
+
+=cut
+
 GetOptions(
     'package|p=s' => \my $package,
     'force|f' => \my $force,
@@ -351,6 +357,10 @@ update_file( filename => filename('Client'),
                 schema => $schema,
                 %options
               }));
+
+=head1 SEE ALSO
+
+The OpenAPI spec - L<https://spec.openapis.org/oas/v3.1.0#openapi-document>
 
 __END__
 [ ] Move common parts of POD generation into a subroutine / include()-able
