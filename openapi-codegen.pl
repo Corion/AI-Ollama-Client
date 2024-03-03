@@ -427,7 +427,6 @@ The OpenAPI spec - L<https://spec.openapis.org/oas/v3.1.0#openapi-document>
 __END__
 [ ] Move common parts of POD generation into a subroutine / include()-able
     template
-[ ] List method parameters and result type if known
 [ ] (optionally) check that the created module file(s) compile
 [ ] Split out the templates into separate files
 [ ] Properly handle URI templates
