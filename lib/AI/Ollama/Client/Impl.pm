@@ -189,7 +189,6 @@ sub generateChatCompletion( $self, %options ) {
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/x-ndjson' ) {
                 my $payload = $resp->body(); # application/x-ndjson
-                # create GenerateChatCompletionResponse from $resp
                 return Future::Mojo->done(
                     AI::Ollama::GenerateChatCompletionResponse->new($payload),
                 );
@@ -294,7 +293,6 @@ sub createModel( $self, %options ) {
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/x-ndjson' ) {
                 my $payload = $resp->body(); # application/x-ndjson
-                # create CreateModelResponse from $resp
                 return Future::Mojo->done(
                     AI::Ollama::CreateModelResponse->new($payload),
                 );
@@ -399,7 +397,6 @@ sub generateEmbedding( $self, %options ) {
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/json' ) {
                 my $payload = $resp->json();
-                # create GenerateEmbeddingResponse from $resp
                 return Future::Mojo->done(
                     AI::Ollama::GenerateEmbeddingResponse->new($payload),
                 );
@@ -456,7 +453,6 @@ sub generateCompletion( $self, %options ) {
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/x-ndjson' ) {
                 my $payload = $resp->body(); # application/x-ndjson
-                # create GenerateCompletionResponse from $resp
                 return Future::Mojo->done(
                     AI::Ollama::GenerateCompletionResponse->new($payload),
                 );
@@ -513,7 +509,6 @@ sub pullModel( $self, %options ) {
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/json' ) {
                 my $payload = $resp->json();
-                # create PullModelResponse from $resp
                 return Future::Mojo->done(
                     AI::Ollama::PullModelResponse->new($payload),
                 );
@@ -570,7 +565,6 @@ sub pushModel( $self, %options ) {
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/json' ) {
                 my $payload = $resp->json();
-                # create PushModelResponse from $resp
                 return Future::Mojo->done(
                     AI::Ollama::PushModelResponse->new($payload),
                 );
@@ -627,7 +621,6 @@ sub showModelInfo( $self, %options ) {
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/json' ) {
                 my $payload = $resp->json();
-                # create ModelInfo from $resp
                 return Future::Mojo->done(
                     AI::Ollama::ModelInfo->new($payload),
                 );
@@ -682,7 +675,6 @@ sub listModels( $self, %options ) {
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/json' ) {
                 my $payload = $resp->json();
-                # create ModelsResponse from $resp
                 return Future::Mojo->done(
                     AI::Ollama::ModelsResponse->new($payload),
                 );

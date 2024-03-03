@@ -240,7 +240,6 @@ sub <%= $method->{name} %>( $self, %options ) {
                 my $payload = $resp->body(); # <%= $ct %>
 %               }
 %               if( my $restype = $info->{content}->{$ct}->{schema}) {
-                # create <%= $restype->{name} %> from $resp
                 return Future::Mojo->done(
                     <%= $prefix %>::<%= $restype->{name} %>->new($payload),
                 );
