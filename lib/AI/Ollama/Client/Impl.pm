@@ -179,6 +179,7 @@ sub generateChatCompletion( $self, %options ) {
         if( $resp->code == 200 ) {
             # Successful operation.
             if( $resp->content_type eq 'application/x-ndjson' ) {
+                my $payload = $resp->body(); # application/x-ndjson
             }
         }
     });
@@ -272,6 +273,7 @@ sub createModel( $self, %options ) {
         if( $resp->code == 200 ) {
             # Successful operation.
             if( $resp->content_type eq 'application/x-ndjson' ) {
+                my $payload = $resp->body(); # application/x-ndjson
             }
         }
     });
@@ -365,6 +367,7 @@ sub generateEmbedding( $self, %options ) {
         if( $resp->code == 200 ) {
             # Successful operation.
             if( $resp->content_type eq 'application/json' ) {
+                my $payload = $resp->json();
             }
         }
     });
@@ -412,6 +415,7 @@ sub generateCompletion( $self, %options ) {
         if( $resp->code == 200 ) {
             # Successful operation.
             if( $resp->content_type eq 'application/x-ndjson' ) {
+                my $payload = $resp->body(); # application/x-ndjson
             }
         }
     });
@@ -459,6 +463,7 @@ sub pullModel( $self, %options ) {
         if( $resp->code == 200 ) {
             # Successful operation.
             if( $resp->content_type eq 'application/json' ) {
+                my $payload = $resp->json();
             }
         }
     });
@@ -506,6 +511,7 @@ sub pushModel( $self, %options ) {
         if( $resp->code == 200 ) {
             # Successful operation.
             if( $resp->content_type eq 'application/json' ) {
+                my $payload = $resp->json();
             }
         }
     });
@@ -553,6 +559,7 @@ sub showModelInfo( $self, %options ) {
         if( $resp->code == 200 ) {
             # Successful operation.
             if( $resp->content_type eq 'application/json' ) {
+                my $payload = $resp->json();
             }
         }
     });
@@ -598,6 +605,7 @@ sub listModels( $self, %options ) {
         if( $resp->code == 200 ) {
             # Successful operation.
             if( $resp->content_type eq 'application/json' ) {
+                my $payload = $resp->json();
             }
         }
     });

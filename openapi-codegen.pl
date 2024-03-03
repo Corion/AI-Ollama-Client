@@ -219,6 +219,11 @@ sub <%= $method->{name} %>( $self, %options ) {
 %       if( $info->{content} ) {
 %           for my $ct (sort keys $info->{content}->%*) {
             if( $resp->content_type eq '<%= $ct %>' ) {
+%               if( $ct eq 'application/json' ) {
+                my $payload = $resp->json();
+%               } else {
+                my $payload = $resp->body(); # <%= $ct %>
+%               }
             }
 %           }
 %       } else { # we don't know how to handle this, so pass $res
