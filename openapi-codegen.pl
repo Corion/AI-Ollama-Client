@@ -230,7 +230,9 @@ sub <%= $method->{name} %>( $self, %options ) {
 %       # Will we always have a content type?!
 %       if( $info->{content} ) {
 %           for my $ct (sort keys $info->{content}->%*) {
-            if( $resp->content_type eq '<%= $ct %>' ) {
+            my $ct = $resp->headers->content_type;
+            $ct =~ s/;\s+.*//;
+            if( $ct eq '<%= $ct %>' ) {
 %               if( $ct eq 'application/json' ) {
                 my $payload = $resp->json();
 %               } else {
