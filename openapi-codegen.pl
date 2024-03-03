@@ -212,6 +212,7 @@ sub <%= $method->{name} %>( $self, %options ) {
 %# Should this be its own subroutine instead?!
 % for my $code (sort keys $elt->{responses}->%*) {
 %     my $info = $elt->{responses}->{ $code };
+%# XXX support 2xx / 5xx codes through =~
         if( $resp->code == <%= $code %> ) {
             # <%= $info->{description} %>
 %       # Check the content type
