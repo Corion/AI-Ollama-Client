@@ -86,6 +86,29 @@ sub filename( $name ) {
 my @methods;
 my @packages;
 
+my %typemap = (
+    string => 'Str',
+    integer => 'Int',
+);
+
+sub map_type( $elt ) {
+    # Do we want to be this harsh?!
+    die "No type information found in $elt?!"
+        unless $elt->{type};
+    my $type = $elt->{type};
+
+    if( $type eq 'array' ) {
+        die "Array type has no subtype?!"
+            unless $elt->{items};
+        my $subtype = map_type( $elt->{items} );
+        return "Array[$subtype]"
+    } elsif( $typemap{ $type }) {
+        return $typemap{ $type }
+    } else {
+        warn "Unknown type '$type'";
+    }
+}
+
 my %template;
 $template{object} = <<'__OBJECT__';
 package <%= $prefix %>::<%= $name %> 0.01;
@@ -93,6 +116,8 @@ package <%= $prefix %>::<%= $name %> 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
+use Types::Standard qw(Str Bool);
+use MooX::TypeTiny;
 
 sub as_hash( $self ) {
     return { $self->%* }

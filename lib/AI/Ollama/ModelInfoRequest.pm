@@ -3,6 +3,8 @@ package AI::Ollama::ModelInfoRequest 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
+use Types::Standard qw(Str Bool);
+use MooX::TypeTiny;
 
 sub as_hash( $self ) {
     return { $self->%* }
