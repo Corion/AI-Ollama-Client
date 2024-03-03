@@ -343,3 +343,9 @@ update_file( filename => filename('Client'),
                 schema => $schema,
                 %options
               }));
+
+__END__
+[ ] Move common parts of POD generation into a subroutine / include()-able
+    template
+[ ] List method parameters and result type if known
+[ ] (optionally) check that the created module file(s) compile
