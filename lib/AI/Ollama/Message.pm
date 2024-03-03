@@ -3,7 +3,7 @@ package AI::Ollama::Message 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
-use Types::Standard qw(Str Bool);
+use Types::Standard qw(Str Bool Num Int Object ArrayRef);
 use MooX::TypeTiny;
 
 sub as_hash( $self ) {
@@ -18,7 +18,7 @@ The content of the message
 
 has 'content' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
     required => 1,
 );
 
@@ -30,7 +30,7 @@ has 'content' => (
 
 has 'images' => (
     is       => 'ro',
-#   isa      => 'array',
+    isa      => ArrayRef[Str],
 );
 
 =head2 C<< role >>
@@ -41,7 +41,7 @@ The role of the message
 
 has 'role' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
     required => 1,
 );
 

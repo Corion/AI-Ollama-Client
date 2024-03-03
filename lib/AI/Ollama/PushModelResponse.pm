@@ -3,7 +3,7 @@ package AI::Ollama::PushModelResponse 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
-use Types::Standard qw(Str Bool);
+use Types::Standard qw(Str Bool Num Int Object ArrayRef);
 use MooX::TypeTiny;
 
 sub as_hash( $self ) {
@@ -18,7 +18,7 @@ the model's digest
 
 has 'digest' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 =head2 C<< status >>
@@ -29,7 +29,7 @@ Status pushing the model.
 
 has 'status' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 =head2 C<< total >>
@@ -40,7 +40,7 @@ total size of the model
 
 has 'total' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 

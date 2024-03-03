@@ -3,7 +3,7 @@ package AI::Ollama::RequestOptions 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
-use Types::Standard qw(Str Bool);
+use Types::Standard qw(Str Bool Num Int Object ArrayRef);
 use MooX::TypeTiny;
 
 sub as_hash( $self ) {
@@ -18,7 +18,7 @@ Enable embedding only. (Default: false)
 
 has 'embedding_only' => (
     is       => 'ro',
-#   isa      => 'boolean',
+    isa      => Bool,
 );
 
 =head2 C<< f16_kv >>
@@ -29,7 +29,7 @@ Enable f16 key/value. (Default: false)
 
 has 'f16_kv' => (
     is       => 'ro',
-#   isa      => 'boolean',
+    isa      => Bool,
 );
 
 =head2 C<< frequency_penalty >>
@@ -40,7 +40,7 @@ Positive values penalize new tokens based on their existing frequency in the tex
 
 has 'frequency_penalty' => (
     is       => 'ro',
-#   isa      => 'number',
+    isa      => Num,
 );
 
 =head2 C<< logits_all >>
@@ -51,7 +51,7 @@ Enable logits all. (Default: false)
 
 has 'logits_all' => (
     is       => 'ro',
-#   isa      => 'boolean',
+    isa      => Bool,
 );
 
 =head2 C<< low_vram >>
@@ -62,7 +62,7 @@ Enable low VRAM mode. (Default: false)
 
 has 'low_vram' => (
     is       => 'ro',
-#   isa      => 'boolean',
+    isa      => Bool,
 );
 
 =head2 C<< main_gpu >>
@@ -73,7 +73,7 @@ The GPU to use for the main model. Default is 0.
 
 has 'main_gpu' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< mirostat >>
@@ -84,7 +84,7 @@ Enable Mirostat sampling for controlling perplexity. (default: 0, 0 = disabled, 
 
 has 'mirostat' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< mirostat_eta >>
@@ -95,7 +95,7 @@ Influences how quickly the algorithm responds to feedback from the generated tex
 
 has 'mirostat_eta' => (
     is       => 'ro',
-#   isa      => 'number',
+    isa      => Num,
 );
 
 =head2 C<< mirostat_tau >>
@@ -106,7 +106,7 @@ Controls the balance between coherence and diversity of the output. A lower valu
 
 has 'mirostat_tau' => (
     is       => 'ro',
-#   isa      => 'number',
+    isa      => Num,
 );
 
 =head2 C<< num_batch >>
@@ -117,7 +117,7 @@ Sets the number of batches to use for generation. (Default: 1)
 
 has 'num_batch' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< num_ctx >>
@@ -128,7 +128,7 @@ Sets the size of the context window used to generate the next token.
 
 has 'num_ctx' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< num_gpu >>
@@ -139,7 +139,7 @@ The number of layers to send to the GPU(s). On macOS it defaults to 1 to enable 
 
 has 'num_gpu' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< num_gqa >>
@@ -150,7 +150,7 @@ The number of GQA groups in the transformer layer. Required for some models, for
 
 has 'num_gqa' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< num_keep >>
@@ -161,7 +161,7 @@ Number of tokens to keep from the prompt.
 
 has 'num_keep' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< num_predict >>
@@ -172,7 +172,7 @@ Maximum number of tokens to predict when generating text. (Default: 128, -1 = in
 
 has 'num_predict' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< num_thread >>
@@ -183,7 +183,7 @@ Sets the number of threads to use during computation. By default, Ollama will de
 
 has 'num_thread' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< numa >>
@@ -194,7 +194,7 @@ Enable NUMA support. (Default: false)
 
 has 'numa' => (
     is       => 'ro',
-#   isa      => 'boolean',
+    isa      => Bool,
 );
 
 =head2 C<< penalize_newline >>
@@ -205,7 +205,7 @@ Penalize newlines in the output. (Default: false)
 
 has 'penalize_newline' => (
     is       => 'ro',
-#   isa      => 'boolean',
+    isa      => Bool,
 );
 
 =head2 C<< presence_penalty >>
@@ -216,7 +216,7 @@ Positive values penalize new tokens based on whether they appear in the text so 
 
 has 'presence_penalty' => (
     is       => 'ro',
-#   isa      => 'number',
+    isa      => Num,
 );
 
 =head2 C<< repeat_last_n >>
@@ -227,7 +227,7 @@ Sets how far back for the model to look back to prevent repetition. (Default: 64
 
 has 'repeat_last_n' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< repeat_penalty >>
@@ -238,7 +238,7 @@ Sets how strongly to penalize repetitions. A higher value (e.g., 1.5) will penal
 
 has 'repeat_penalty' => (
     is       => 'ro',
-#   isa      => 'number',
+    isa      => Num,
 );
 
 =head2 C<< rope_frequency_base >>
@@ -249,7 +249,7 @@ The base of the rope frequency scale. (Default: 1.0)
 
 has 'rope_frequency_base' => (
     is       => 'ro',
-#   isa      => 'number',
+    isa      => Num,
 );
 
 =head2 C<< rope_frequency_scale >>
@@ -260,7 +260,7 @@ The scale of the rope frequency. (Default: 1.0)
 
 has 'rope_frequency_scale' => (
     is       => 'ro',
-#   isa      => 'number',
+    isa      => Num,
 );
 
 =head2 C<< seed >>
@@ -271,7 +271,7 @@ Sets the random number seed to use for generation. Setting this to a specific nu
 
 has 'seed' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< stop >>
@@ -282,7 +282,7 @@ Sequences where the API will stop generating further tokens. The returned text w
 
 has 'stop' => (
     is       => 'ro',
-#   isa      => 'array',
+    isa      => ArrayRef[Str],
 );
 
 =head2 C<< temperature >>
@@ -293,7 +293,7 @@ The temperature of the model. Increasing the temperature will make the model ans
 
 has 'temperature' => (
     is       => 'ro',
-#   isa      => 'number',
+    isa      => Num,
 );
 
 =head2 C<< tfs_z >>
@@ -304,7 +304,7 @@ Tail free sampling is used to reduce the impact of less probable tokens from the
 
 has 'tfs_z' => (
     is       => 'ro',
-#   isa      => 'number',
+    isa      => Num,
 );
 
 =head2 C<< top_k >>
@@ -315,7 +315,7 @@ Reduces the probability of generating nonsense. A higher value (e.g. 100) will g
 
 has 'top_k' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< top_p >>
@@ -326,7 +326,7 @@ Works together with top-k. A higher value (e.g., 0.95) will lead to more diverse
 
 has 'top_p' => (
     is       => 'ro',
-#   isa      => 'number',
+    isa      => Num,
 );
 
 =head2 C<< typical_p >>
@@ -337,7 +337,7 @@ Typical p is used to reduce the impact of less probable tokens from the output.
 
 has 'typical_p' => (
     is       => 'ro',
-#   isa      => 'number',
+    isa      => Num,
 );
 
 =head2 C<< use_mlock >>
@@ -348,7 +348,7 @@ Enable mlock. (Default: false)
 
 has 'use_mlock' => (
     is       => 'ro',
-#   isa      => 'boolean',
+    isa      => Bool,
 );
 
 =head2 C<< use_mmap >>
@@ -359,7 +359,7 @@ Enable mmap. (Default: false)
 
 has 'use_mmap' => (
     is       => 'ro',
-#   isa      => 'boolean',
+    isa      => Bool,
 );
 
 =head2 C<< vocab_only >>
@@ -370,7 +370,7 @@ Enable vocab only. (Default: false)
 
 has 'vocab_only' => (
     is       => 'ro',
-#   isa      => 'boolean',
+    isa      => Bool,
 );
 
 

@@ -3,7 +3,7 @@ package AI::Ollama::PullModelResponse 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
-use Types::Standard qw(Str Bool);
+use Types::Standard qw(Str Bool Num Int Object ArrayRef);
 use MooX::TypeTiny;
 
 sub as_hash( $self ) {
@@ -18,7 +18,7 @@ Total bytes transferred.
 
 has 'completed' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< digest >>
@@ -29,7 +29,7 @@ The model's digest.
 
 has 'digest' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 =head2 C<< status >>
@@ -40,7 +40,7 @@ Status pulling the model.
 
 has 'status' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 =head2 C<< total >>
@@ -51,7 +51,7 @@ Total size of the model.
 
 has 'total' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 

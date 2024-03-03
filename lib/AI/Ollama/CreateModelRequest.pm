@@ -3,7 +3,7 @@ package AI::Ollama::CreateModelRequest 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
-use Types::Standard qw(Str Bool);
+use Types::Standard qw(Str Bool Num Int Object ArrayRef);
 use MooX::TypeTiny;
 
 sub as_hash( $self ) {
@@ -18,7 +18,7 @@ The contents of the Modelfile.
 
 has 'modelfile' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
     required => 1,
 );
 
@@ -32,7 +32,7 @@ Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` a
 
 has 'name' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
     required => 1,
 );
 
@@ -44,7 +44,7 @@ If `false` the response will be returned as a single response object, otherwise 
 
 has 'stream' => (
     is       => 'ro',
-#   isa      => 'boolean',
+    isa      => Bool,
 );
 
 

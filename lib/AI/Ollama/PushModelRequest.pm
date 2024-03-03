@@ -3,7 +3,7 @@ package AI::Ollama::PushModelRequest 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
-use Types::Standard qw(Str Bool);
+use Types::Standard qw(Str Bool Num Int Object ArrayRef);
 use MooX::TypeTiny;
 
 sub as_hash( $self ) {
@@ -20,7 +20,7 @@ Only use this if you are pushing to your library during development.
 
 has 'insecure' => (
     is       => 'ro',
-#   isa      => 'boolean',
+    isa      => Bool,
 );
 
 =head2 C<< name >>
@@ -31,7 +31,7 @@ The name of the model to push in the form of <namespace>/<model>:<tag>.
 
 has 'name' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
     required => 1,
 );
 
@@ -43,7 +43,7 @@ If `false` the response will be returned as a single response object, otherwise 
 
 has 'stream' => (
     is       => 'ro',
-#   isa      => 'boolean',
+    isa      => Bool,
 );
 
 

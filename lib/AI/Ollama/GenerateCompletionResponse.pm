@@ -3,7 +3,7 @@ package AI::Ollama::GenerateCompletionResponse 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
-use Types::Standard qw(Str Bool);
+use Types::Standard qw(Str Bool Num Int Object ArrayRef);
 use MooX::TypeTiny;
 
 sub as_hash( $self ) {
@@ -18,7 +18,7 @@ An encoding of the conversation used in this response, this can be sent in the n
 
 has 'context' => (
     is       => 'ro',
-#   isa      => 'array',
+    isa      => ArrayRef[Int],
 );
 
 =head2 C<< created_at >>
@@ -29,7 +29,7 @@ Date on which a model was created.
 
 has 'created_at' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 =head2 C<< done >>
@@ -40,7 +40,7 @@ Whether the response has completed.
 
 has 'done' => (
     is       => 'ro',
-#   isa      => 'boolean',
+    isa      => Bool,
 );
 
 =head2 C<< eval_count >>
@@ -51,7 +51,7 @@ Number of tokens the response.
 
 has 'eval_count' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< eval_duration >>
@@ -62,7 +62,7 @@ Time in nanoseconds spent generating the response.
 
 has 'eval_duration' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< load_duration >>
@@ -73,7 +73,7 @@ Time spent in nanoseconds loading the model.
 
 has 'load_duration' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< model >>
@@ -86,7 +86,7 @@ Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` a
 
 has 'model' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 =head2 C<< prompt_eval_count >>
@@ -97,7 +97,7 @@ Number of tokens in the prompt.
 
 has 'prompt_eval_count' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< prompt_eval_duration >>
@@ -108,7 +108,7 @@ Time spent in nanoseconds evaluating the prompt.
 
 has 'prompt_eval_duration' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< response >>
@@ -119,7 +119,7 @@ The response for a given prompt with a provided model.
 
 has 'response' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 =head2 C<< total_duration >>
@@ -130,7 +130,7 @@ Time spent generating the response.
 
 has 'total_duration' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 

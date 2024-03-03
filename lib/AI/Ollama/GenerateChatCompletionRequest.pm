@@ -3,7 +3,7 @@ package AI::Ollama::GenerateChatCompletionRequest 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
-use Types::Standard qw(Str Bool);
+use Types::Standard qw(Str Bool Num Int Object ArrayRef);
 use MooX::TypeTiny;
 
 sub as_hash( $self ) {
@@ -22,7 +22,7 @@ Note: it's important to instruct the model to use JSON in the prompt. Otherwise,
 
 has 'format' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 =head2 C<< keep_alive >>
@@ -38,7 +38,7 @@ How long (in minutes) to keep the model loaded in memory.
 
 has 'keep_alive' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< messages >>
@@ -49,7 +49,7 @@ The messages of the chat, this can be used to keep a chat memory
 
 has 'messages' => (
     is       => 'ro',
-#   isa      => 'array',
+    isa      => ArrayRef[Object],
     required => 1,
 );
 
@@ -63,7 +63,7 @@ Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` a
 
 has 'model' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
     required => 1,
 );
 
@@ -75,7 +75,7 @@ Additional model parameters listed in the documentation for the Modelfile such a
 
 has 'options' => (
     is       => 'ro',
-#   isa      => 'object',
+    isa      => Object,
 );
 
 =head2 C<< stream >>
@@ -86,7 +86,7 @@ If `false` the response will be returned as a single response object, otherwise 
 
 has 'stream' => (
     is       => 'ro',
-#   isa      => 'boolean',
+    isa      => Bool,
 );
 
 

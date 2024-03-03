@@ -88,7 +88,10 @@ my @packages;
 
 my %typemap = (
     string => 'Str',
+    number => 'Num',
     integer => 'Int',
+    boolean => 'Bool',
+    object  => 'Object',
 );
 
 sub map_type( $elt ) {
@@ -101,7 +104,7 @@ sub map_type( $elt ) {
         die "Array type has no subtype?!"
             unless $elt->{items};
         my $subtype = map_type( $elt->{items} );
-        return "Array[$subtype]"
+        return "ArrayRef[$subtype]"
     } elsif( $typemap{ $type }) {
         return $typemap{ $type }
     } else {
@@ -116,7 +119,7 @@ package <%= $prefix %>::<%= $name %> 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
-use Types::Standard qw(Str Bool);
+use Types::Standard qw(Str Bool Num Int Object ArrayRef);
 use MooX::TypeTiny;
 
 sub as_hash( $self ) {
@@ -133,7 +136,7 @@ sub as_hash( $self ) {
 
 has '<%= $prop %>' => (
     is       => 'ro',
-#   isa      => '<%= $p->{type} %>',
+    isa      => <%= map_type( $p ) %>,
 % if( grep {$_ eq $prop} $elt->{required}->@*) {
     required => 1,
 % }
@@ -368,7 +371,7 @@ Returns a L<< <%= $prefix %>::<%= $content->{$ct}->{schema}->{name} %> >>.
 1;
 __CLIENT__
 
-my $mt = Mojo::Template->new->vars(1);
+my $mt = Mojo::Template->new->vars(1)->namespace('main');
 
 my %options = (
     prefix => $package,

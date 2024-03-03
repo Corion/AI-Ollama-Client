@@ -3,7 +3,7 @@ package AI::Ollama::CopyModelRequest 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
-use Types::Standard qw(Str Bool);
+use Types::Standard qw(Str Bool Num Int Object ArrayRef);
 use MooX::TypeTiny;
 
 sub as_hash( $self ) {
@@ -18,7 +18,7 @@ Name of the new model.
 
 has 'destination' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
     required => 1,
 );
 
@@ -30,7 +30,7 @@ Name of the model to copy.
 
 has 'source' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
     required => 1,
 );
 

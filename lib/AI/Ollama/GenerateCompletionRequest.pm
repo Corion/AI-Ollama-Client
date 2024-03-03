@@ -3,7 +3,7 @@ package AI::Ollama::GenerateCompletionRequest 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
-use Types::Standard qw(Str Bool);
+use Types::Standard qw(Str Bool Num Int Object ArrayRef);
 use MooX::TypeTiny;
 
 sub as_hash( $self ) {
@@ -18,7 +18,7 @@ The context parameter returned from a previous request to [generateCompletion], 
 
 has 'context' => (
     is       => 'ro',
-#   isa      => 'array',
+    isa      => ArrayRef[Int],
 );
 
 =head2 C<< format >>
@@ -33,7 +33,7 @@ Note: it's important to instruct the model to use JSON in the prompt. Otherwise,
 
 has 'format' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 =head2 C<< images >>
@@ -44,7 +44,7 @@ has 'format' => (
 
 has 'images' => (
     is       => 'ro',
-#   isa      => 'array',
+    isa      => ArrayRef[Str],
 );
 
 =head2 C<< keep_alive >>
@@ -60,7 +60,7 @@ How long (in minutes) to keep the model loaded in memory.
 
 has 'keep_alive' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 =head2 C<< model >>
@@ -73,7 +73,7 @@ Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` a
 
 has 'model' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
     required => 1,
 );
 
@@ -85,7 +85,7 @@ Additional model parameters listed in the documentation for the Modelfile such a
 
 has 'options' => (
     is       => 'ro',
-#   isa      => 'object',
+    isa      => Object,
 );
 
 =head2 C<< prompt >>
@@ -96,7 +96,7 @@ The prompt to generate a response.
 
 has 'prompt' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
     required => 1,
 );
 
@@ -110,7 +110,7 @@ You may choose to use the `raw` parameter if you are specifying a full templated
 
 has 'raw' => (
     is       => 'ro',
-#   isa      => 'boolean',
+    isa      => Bool,
 );
 
 =head2 C<< stream >>
@@ -121,7 +121,7 @@ If `false` the response will be returned as a single response object, otherwise 
 
 has 'stream' => (
     is       => 'ro',
-#   isa      => 'boolean',
+    isa      => Bool,
 );
 
 =head2 C<< system >>
@@ -132,7 +132,7 @@ The system prompt to (overrides what is defined in the Modelfile).
 
 has 'system' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 =head2 C<< template >>
@@ -143,7 +143,7 @@ The full prompt or prompt template (overrides what is defined in the Modelfile).
 
 has 'template' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 

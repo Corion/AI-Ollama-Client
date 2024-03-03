@@ -3,7 +3,7 @@ package AI::Ollama::ModelInfo 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
-use Types::Standard qw(Str Bool);
+use Types::Standard qw(Str Bool Num Int Object ArrayRef);
 use MooX::TypeTiny;
 
 sub as_hash( $self ) {
@@ -18,7 +18,7 @@ The model's license.
 
 has 'license' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 =head2 C<< modelfile >>
@@ -29,7 +29,7 @@ The modelfile associated with the model.
 
 has 'modelfile' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 =head2 C<< parameters >>
@@ -40,7 +40,7 @@ The model parameters.
 
 has 'parameters' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 =head2 C<< template >>
@@ -51,7 +51,7 @@ The prompt template for the model.
 
 has 'template' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 

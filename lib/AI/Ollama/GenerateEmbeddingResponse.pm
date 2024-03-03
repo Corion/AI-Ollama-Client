@@ -3,7 +3,7 @@ package AI::Ollama::GenerateEmbeddingResponse 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
-use Types::Standard qw(Str Bool);
+use Types::Standard qw(Str Bool Num Int Object ArrayRef);
 use MooX::TypeTiny;
 
 sub as_hash( $self ) {
@@ -18,7 +18,7 @@ The embedding for the prompt.
 
 has 'embedding' => (
     is       => 'ro',
-#   isa      => 'array',
+    isa      => ArrayRef[Num],
 );
 
 

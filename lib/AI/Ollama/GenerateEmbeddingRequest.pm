@@ -3,7 +3,7 @@ package AI::Ollama::GenerateEmbeddingRequest 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
-use Types::Standard qw(Str Bool);
+use Types::Standard qw(Str Bool Num Int Object ArrayRef);
 use MooX::TypeTiny;
 
 sub as_hash( $self ) {
@@ -20,7 +20,7 @@ Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` a
 
 has 'model' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
     required => 1,
 );
 
@@ -32,7 +32,7 @@ Additional model parameters listed in the documentation for the Modelfile such a
 
 has 'options' => (
     is       => 'ro',
-#   isa      => 'object',
+    isa      => Object,
 );
 
 =head2 C<< prompt >>
@@ -43,7 +43,7 @@ Text to generate embeddings for.
 
 has 'prompt' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
     required => 1,
 );
 

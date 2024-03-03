@@ -3,7 +3,7 @@ package AI::Ollama::Model 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
-use Types::Standard qw(Str Bool);
+use Types::Standard qw(Str Bool Num Int Object ArrayRef);
 use MooX::TypeTiny;
 
 sub as_hash( $self ) {
@@ -18,7 +18,7 @@ Model modification date.
 
 has 'modified_at' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 =head2 C<< name >>
@@ -31,7 +31,7 @@ Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` a
 
 has 'name' => (
     is       => 'ro',
-#   isa      => 'string',
+    isa      => Str,
 );
 
 =head2 C<< size >>
@@ -42,7 +42,7 @@ Size of the model on disk.
 
 has 'size' => (
     is       => 'ro',
-#   isa      => 'integer',
+    isa      => Int,
 );
 
 
