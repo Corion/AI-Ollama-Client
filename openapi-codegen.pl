@@ -217,7 +217,7 @@ sub <%= $method->{name} %>( $self, %options ) {
 %       }
         }
 % }
-    }
+    })
 
     return $res
 }
