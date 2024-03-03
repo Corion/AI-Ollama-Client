@@ -178,8 +178,6 @@ sub generateChatCompletion( $self, %options ) {
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            if( $resp->content_type eq 'HASH(0x557e6888bec0)' ) {
-            }
             if( $resp->content_type eq 'application/x-ndjson' ) {
             }
         }
@@ -273,8 +271,6 @@ sub createModel( $self, %options ) {
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            if( $resp->content_type eq 'HASH(0x557e688a2730)' ) {
-            }
             if( $resp->content_type eq 'application/x-ndjson' ) {
             }
         }
@@ -368,8 +364,6 @@ sub generateEmbedding( $self, %options ) {
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            if( $resp->content_type eq 'HASH(0x557e68898338)' ) {
-            }
             if( $resp->content_type eq 'application/json' ) {
             }
         }
@@ -417,8 +411,6 @@ sub generateCompletion( $self, %options ) {
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            if( $resp->content_type eq 'HASH(0x557e68881020)' ) {
-            }
             if( $resp->content_type eq 'application/x-ndjson' ) {
             }
         }
@@ -466,8 +458,6 @@ sub pullModel( $self, %options ) {
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            if( $resp->content_type eq 'HASH(0x557e688d8850)' ) {
-            }
             if( $resp->content_type eq 'application/json' ) {
             }
         }
@@ -515,8 +505,6 @@ sub pushModel( $self, %options ) {
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            if( $resp->content_type eq 'HASH(0x557e688e5d98)' ) {
-            }
             if( $resp->content_type eq 'application/json' ) {
             }
         }
@@ -564,8 +552,6 @@ sub showModelInfo( $self, %options ) {
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            if( $resp->content_type eq 'HASH(0x557e688b7328)' ) {
-            }
             if( $resp->content_type eq 'application/json' ) {
             }
         }
@@ -611,8 +597,6 @@ sub listModels( $self, %options ) {
 
         if( $resp->code == 200 ) {
             # Successful operation.
-            if( $resp->content_type eq 'HASH(0x557e688ab1a0)' ) {
-            }
             if( $resp->content_type eq 'application/json' ) {
             }
         }

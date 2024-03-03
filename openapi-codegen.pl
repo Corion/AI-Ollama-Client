@@ -217,7 +217,7 @@ sub <%= $method->{name} %>( $self, %options ) {
 %       # Check the content type
 %       # Will we always have a content type?!
 %       if( $info->{content} ) {
-%           for my $ct (sort $info->{content}->%*) {
+%           for my $ct (sort keys $info->{content}->%*) {
             if( $resp->content_type eq '<%= $ct %>' ) {
             }
 %           }
