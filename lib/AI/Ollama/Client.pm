@@ -24,9 +24,10 @@ AI::Ollama::Client - Client for AI::Ollama
 
 =head2 C<< checkBlob >>
 
-  $client->checkBlob();
+  my $res = $client->checkBlob()->get;
 
 Check to see if a blob exists on the Ollama server which is useful when creating models.
+
 
 =cut
 
@@ -42,7 +43,7 @@ around 'checkBlob' => sub ( $super, $self, %options ) {
 
 =head2 C<< createBlob >>
 
-  $client->createBlob();
+  my $res = $client->createBlob()->get;
 
 Create a blob from a file. Returns the server file path.
 
@@ -51,7 +52,7 @@ Create a blob from a file. Returns the server file path.
 
 =head2 C<< generateChatCompletion >>
 
-  $client->generateChatCompletion();
+  my $res = $client->generateChatCompletion()->get;
 
 Generate the next message in a chat with a provided model.
 
@@ -61,7 +62,7 @@ Returns a L<< AI::Ollama::GenerateChatCompletionResponse >>.
 
 =head2 C<< copyModel >>
 
-  $client->copyModel();
+  my $res = $client->copyModel()->get;
 
 Creates a model with another name from an existing model.
 
@@ -70,7 +71,7 @@ Creates a model with another name from an existing model.
 
 =head2 C<< createModel >>
 
-  $client->createModel();
+  my $res = $client->createModel()->get;
 
 Create a model from a Modelfile.
 
@@ -80,7 +81,7 @@ Returns a L<< AI::Ollama::CreateModelResponse >>.
 
 =head2 C<< deleteModel >>
 
-  $client->deleteModel();
+  my $res = $client->deleteModel()->get;
 
 Delete a model and its data.
 
@@ -89,7 +90,7 @@ Delete a model and its data.
 
 =head2 C<< generateEmbedding >>
 
-  $client->generateEmbedding();
+  my $res = $client->generateEmbedding()->get;
 
 Generate embeddings from a model.
 
@@ -99,7 +100,7 @@ Returns a L<< AI::Ollama::GenerateEmbeddingResponse >>.
 
 =head2 C<< generateCompletion >>
 
-  $client->generateCompletion();
+  my $res = $client->generateCompletion()->get;
 
 Generate a response for a given prompt with a provided model.
 
@@ -109,7 +110,7 @@ Returns a L<< AI::Ollama::GenerateCompletionResponse >>.
 
 =head2 C<< pullModel >>
 
-  $client->pullModel();
+  my $res = $client->pullModel()->get;
 
 Download a model from the ollama library.
 
@@ -119,7 +120,7 @@ Returns a L<< AI::Ollama::PullModelResponse >>.
 
 =head2 C<< pushModel >>
 
-  $client->pushModel();
+  my $res = $client->pushModel()->get;
 
 Upload a model to a model library.
 
