@@ -294,7 +294,7 @@ sub <%= $method->{name} %>( $self, %options ) {
 %               if( $ct eq 'application/json' ) {
                 my $payload = $resp->json();
 %               } else {
-                my $payload = $resp->body(); # <%= $ct %>
+                my $payload = $resp->body();
 %               }
 %               if( my $restype = $info->{content}->{$ct}->{schema}) {
                 return Future::Mojo->done(
