@@ -263,7 +263,7 @@ sub generateChatCompletion( $self, %options ) {
             my $ct = $resp->headers->content_type;
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/x-ndjson' ) {
-                my $payload = $resp->body(); # application/x-ndjson
+                my $payload = $resp->body();
                 return Future::Mojo->done(
                     AI::Ollama::GenerateChatCompletionResponse->new($payload),
                 );
@@ -421,7 +421,7 @@ sub createModel( $self, %options ) {
             my $ct = $resp->headers->content_type;
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/x-ndjson' ) {
-                my $payload = $resp->body(); # application/x-ndjson
+                my $payload = $resp->body();
                 return Future::Mojo->done(
                     AI::Ollama::CreateModelResponse->new($payload),
                 );
@@ -736,7 +736,7 @@ sub generateCompletion( $self, %options ) {
             my $ct = $resp->headers->content_type;
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/x-ndjson' ) {
-                my $payload = $resp->body(); # application/x-ndjson
+                my $payload = $resp->body();
                 return Future::Mojo->done(
                     AI::Ollama::GenerateCompletionResponse->new($payload),
                 );
