@@ -1,6 +1,7 @@
 package main;
-use 5.020;
+use 5.036;
 use experimental 'signatures';
+use experimental 'for_list';
 use File::Path 'make_path';
 use File::Basename;
 use Getopt::Long;
@@ -112,6 +113,11 @@ sub map_type( $elt ) {
     }
 }
 
+sub openapi_submodules( $schema ) {
+    my $schemata = $schema->{components}->{schemas};
+    map { $_ => $schemata->{ $_ } } sort keys $schemata->%*
+}
+
 my %template;
 $template{object} = <<'__OBJECT__';
 package <%= $prefix %>::<%= $name %> 0.01;
@@ -161,8 +167,7 @@ use OpenAPI::Modern;
 
 use Future::Mojo;
 
-% for my $submodule (sort keys $schema->{components}->{schemas}->%*) {
-%     my $info = $schema->{components}->{schemas}->{$submodule};
+% for my ($submodule,$info) (openapi_submodules($schema)) {
 %     if( $info->{type} eq 'object' ) {
 use <%= $prefix %>::<%= $submodule %>;
 %     }
