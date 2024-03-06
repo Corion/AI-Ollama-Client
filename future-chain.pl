@@ -15,14 +15,12 @@ my @lines = qw(
 
 my $queue = Future::Queue->new;
 
-my $q = $queue->curr;
 for my $l (@lines) {
     $queue->enqueue($l);
 }
 $queue->enqueue(undef);
 
-my $curr = $q;
-my %seen;
+my $curr = $queue->head;
 repeat {
     my ($next,$str) = $curr->get;
     say $str if defined $str;
