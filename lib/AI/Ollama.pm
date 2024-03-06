@@ -8,27 +8,26 @@ my $ol = AI::Ollama::Client->new(
     server => 'http://192.168.1.97:11434/api',
 );
 
-my $tx = $ol->showModelInfo(
-    name => 'llama2',
-)->then( sub ($res) {
-    say $res->modelfile;
-    #Mojo::IOLoop->stop_gracefully;
-    #return Future->done($res);
-});
-
-my $tx2 = $ol->listModels(
-)->then( sub ($res) {
-    use Data::Dumper; say Dumper $res->models;
-});
-
-
-#my $tx = $ol->generateCompletion(
-#    model => 'llama2',
-#    prompt => 'How are you?',
+#my $tx = $ol->showModelInfo(
+#    name => 'llama2',
 #)->then( sub ($res) {
-#    use Data::Dumper;
-#    warn Dumper $res;
+#    say $res->modelfile;
+#    #Mojo::IOLoop->stop_gracefully;
+#    #return Future->done($res);
 #});
+
+#my $tx2 = $ol->listModels(
+#)->then( sub ($res) {
+#    use Data::Dumper; say Dumper $res->models;
+#});
+
+my $tx = $ol->generateCompletion(
+    model => 'llama2',
+    prompt => 'How are you?',
+)->then( sub ($res) {
+    use Data::Dumper;
+    warn Dumper $res;
+});
 
 sub decode_ndjson( $stream, $r_buffer ) {
     if( $$r_buffer ) {
