@@ -277,7 +277,7 @@ sub <%= $method->{name} %>( $self, %options ) {
     my $r1 = Future::Mojo->new();
     my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
-
+        # Should we validate using OpenAPI::Modern here?!
 %# Should this be its own subroutine instead?!
 % for my $code (sort keys $elt->{responses}->%*) {
 %     my $info = $elt->{responses}->{ $code };

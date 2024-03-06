@@ -81,10 +81,12 @@ sub checkBlob( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
+
+
     my $r1 = Future::Mojo->new();
     my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
-
+        # Should we validate using OpenAPI::Modern here?!
         if( $resp->code == 200 ) {
             # Blob exists on the server
             return Future::Mojo->done($resp);
@@ -140,10 +142,12 @@ sub createBlob( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
+
+
     my $r1 = Future::Mojo->new();
     my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
-
+        # Should we validate using OpenAPI::Modern here?!
         if( $resp->code == 201 ) {
             # Blob was successfully created
             return Future::Mojo->done($resp);
@@ -331,10 +335,12 @@ sub copyModel( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
+
+
     my $r1 = Future::Mojo->new();
     my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
-
+        # Should we validate using OpenAPI::Modern here?!
         if( $resp->code == 200 ) {
             # Successful operation.
             return Future::Mojo->done($resp);
@@ -483,10 +489,12 @@ sub deleteModel( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
+
+
     my $r1 = Future::Mojo->new();
     my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
-
+        # Should we validate using OpenAPI::Modern here?!
         if( $resp->code == 200 ) {
             # Successful operation.
             return Future::Mojo->done($resp);
@@ -564,10 +572,12 @@ sub generateEmbedding( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
+
+
     my $r1 = Future::Mojo->new();
     my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
-
+        # Should we validate using OpenAPI::Modern here?!
         if( $resp->code == 200 ) {
             # Successful operation.
             my $ct = $resp->headers->content_type;
@@ -817,10 +827,12 @@ sub pullModel( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
+
+
     my $r1 = Future::Mojo->new();
     my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
-
+        # Should we validate using OpenAPI::Modern here?!
         if( $resp->code == 200 ) {
             # Successful operation.
             my $ct = $resp->headers->content_type;
@@ -905,10 +917,12 @@ sub pushModel( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
+
+
     my $r1 = Future::Mojo->new();
     my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
-
+        # Should we validate using OpenAPI::Modern here?!
         if( $resp->code == 200 ) {
             # Successful operation.
             my $ct = $resp->headers->content_type;
@@ -977,10 +991,12 @@ sub showModelInfo( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
+
+
     my $r1 = Future::Mojo->new();
     my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
-
+        # Should we validate using OpenAPI::Modern here?!
         if( $resp->code == 200 ) {
             # Successful operation.
             my $ct = $resp->headers->content_type;
@@ -1035,10 +1051,12 @@ sub listModels( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
+
+
     my $r1 = Future::Mojo->new();
     my $res = $r1->then( sub( $tx ) {
         my $resp = $tx->res;
-
+        # Should we validate using OpenAPI::Modern here?!
         if( $resp->code == 200 ) {
             # Successful operation.
             my $ct = $resp->headers->content_type;
