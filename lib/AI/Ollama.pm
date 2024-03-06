@@ -6,7 +6,7 @@ use AI::Ollama::Client;
 use Future::Utils 'repeat';
 
 my $ol = AI::Ollama::Client->new(
-    server => 'http://192.168.1.97:11434/api',
+    server => 'http://192.168.1.29:11434/api',
 );
 
 #my $tx = $ol->showModelInfo(
@@ -27,28 +27,26 @@ my $tx = $ol->generateCompletion(
     prompt => 'How are you?',
 );
 
+#my $tx2 = $ol->generateCompletion(
+#    model => 'llama2',
+#    prompt => 'What is the difference between imperative and async/await?',
+#);
+
 repeat {
     $| = 1;
     my( $next, $resp ) = $tx->get;
     print $resp->response;
     $tx = $next;
-    Future->done( $resp->done );
+
+    Future::Mojo->done( $resp->done );
 } until => sub($done) { $done->get };
 
-#my $buffer;
-#$tx->res->on( progress => sub($stream) {
-#    for my $elt (decode_ndjson( $stream->body, \$buffer )) {
-#        local $| = 1;
-#        if( $elt->{response} eq "\n" ) {
-#            print "\r";
-#        } else {
-#            print $elt->{response};
-#        }
-#        if( $elt->{done} ) {
-#            print "\n";
-#            Mojo::IOLoop->stop_gracefully;
-#        };
-#    };
-#});
+#repeat {
+#    $| = 1;
+#    my( $next, $resp ) = $tx2->get;
+#    print $resp->response;
+#    $tx2 = $next;
+#    Future->done( $resp->done );
+#} until => sub($done) { $done->get };
 
 Mojo::IOLoop->start unless Mojo::IOLoop->is_running;

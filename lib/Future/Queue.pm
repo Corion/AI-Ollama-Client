@@ -33,7 +33,7 @@ Future::Queue - a simple queue with a Future API
 
 has 'head' => (
     is => 'lazy',
-    default => sub { Future->new },
+    default => sub { Future::Mojo->new },
 );
 
 has 'tail' => (
@@ -43,8 +43,9 @@ has 'tail' => (
 
 sub enqueue($self, @stuff) {
     my $res = $self->tail;
-    $self->{tail} = Future->new;
-    return $res->resolve( $self->tail, @stuff );
+    $self->{tail} = Future::Mojo->new;
+    $res->resolve( $self->tail, @stuff );
+    return
 }
 
 1;

@@ -298,10 +298,11 @@ sub generateChatCompletion( $self, %options ) {
     });
 
     $tx->res->once( progress => sub($msg, @) {
+    say "Kicking off streaming response loop";
         $r1->resolve( $tx );
         undef $r1;
     });
-    $tx = $self->ua->start($tx);
+    state $_tx = $self->ua->start_p($tx);
 
     return $res
 }
@@ -479,10 +480,11 @@ sub createModel( $self, %options ) {
     });
 
     $tx->res->once( progress => sub($msg, @) {
+    say "Kicking off streaming response loop";
         $r1->resolve( $tx );
         undef $r1;
     });
-    $tx = $self->ua->start($tx);
+    state $_tx = $self->ua->start_p($tx);
 
     return $res
 }
@@ -819,10 +821,11 @@ sub generateCompletion( $self, %options ) {
     });
 
     $tx->res->once( progress => sub($msg, @) {
+    say "Kicking off streaming response loop";
         $r1->resolve( $tx );
         undef $r1;
     });
-    $tx = $self->ua->start($tx);
+    state $_tx = $self->ua->start_p($tx);
 
     return $res
 }
