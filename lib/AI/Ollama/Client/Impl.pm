@@ -435,11 +435,13 @@ sub createModel( $self, %options ) {
         }
     });
 
-    # Start our transaction
-    $tx = $self->ua->start_p($tx)->then(sub($tx) {
+    $tx->res->once( progress => sub($msg, $state,$offset) {
+        # Do magic here
+        # Maybe this is just the same?!
         $r1->resolve( $tx );
         undef $r1;
     });
+    $tx = $self->ua->start($tx);
 
     return $res
 }
@@ -754,11 +756,13 @@ sub generateCompletion( $self, %options ) {
         }
     });
 
-    # Start our transaction
-    $tx = $self->ua->start_p($tx)->then(sub($tx) {
+    $tx->res->once( progress => sub($msg, $state,$offset) {
+        # Do magic here
+        # Maybe this is just the same?!
         $r1->resolve( $tx );
         undef $r1;
     });
+    $tx = $self->ua->start($tx);
 
     return $res
 }
