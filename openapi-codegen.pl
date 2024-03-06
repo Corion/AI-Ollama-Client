@@ -320,11 +320,13 @@ sub <%= $method->{name} %>( $self, %options ) {
 %               if( $is_streaming ) {
             if( $ct eq '<%= $ct %>' ) {
                 # we only handle ndjson currently
-    my $leftover = '';
-                    my $fresh = $leftover . substr( $msg->body, $offset );
+                my $handled_offset = 0;
                 $resp->on(progress => sub($msg,@) {
+                    my $fresh = substr( $msg->body, $handled_offset );
+                    my $body = $msg->body;
+                    $body =~ s/[^\r\n]+\z//; # Strip any unfinished line
+                    $handled_offset = length $body;
                     my @lines = split /\n/, $fresh;
-                    $leftover = pop @lines; # an empty string
                     for (@lines) {
                         my $payload = decode_json( $_ );
                         $queue->enqueue(
