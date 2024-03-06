@@ -163,6 +163,7 @@ use experimental 'signatures';
 # These should go into a ::Role
 use YAML::PP;
 use Mojo::UserAgent;
+use Mojo::JSON 'encode_json', 'decode_json';
 use OpenAPI::Modern;
 
 use Future::Mojo;
