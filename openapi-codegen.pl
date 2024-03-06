@@ -288,7 +288,7 @@ sub <%= $method->{name} %>( $self, %options ) {
 % if( $is_streaming ) {
     use Future::Queue;
     my $queue = Future::Queue->new;
-    my $res = $queue->curr;
+    my $res = $queue->head;
     our @store; # we should use ->retain() instead
     push @store, $r1->then( sub( $tx ) {
 % } else {

@@ -781,7 +781,7 @@ sub generateCompletion( $self, %options ) {
     my $r1 = Future::Mojo->new();
     use Future::Queue;
     my $queue = Future::Queue->new;
-    my $res = $queue->curr;
+    my $res = $queue->head;
     our @store; # we should use ->retain() instead
     push @store, $r1->then( sub( $tx ) {
         my $resp = $tx->res;
