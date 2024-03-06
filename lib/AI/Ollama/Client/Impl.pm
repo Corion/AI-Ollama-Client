@@ -276,18 +276,20 @@ sub generateChatCompletion( $self, %options ) {
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/x-ndjson' ) {
                 # we only handle ndjson currently
-    my $leftover = '';
-                $resp->on(progress => sub($msg,$state,$offset) {
-                    my $fresh = $leftover . substr( $msg->body, $offset );
+                my $handled_offset = 0;
+                $resp->on(progress => sub($msg,@) {
+                    my $fresh = substr( $msg->body, $handled_offset );
+                    my $body = $msg->body;
+                    $body =~ s/[^\r\n]+\z//; # Strip any unfinished line
+                    $handled_offset = length $body;
                     my @lines = split /\n/, $fresh;
-                    $leftover = pop @lines; # an empty string
                     for (@lines) {
                         my $payload = decode_json( $_ );
                         $queue->enqueue(
                             AI::Ollama::GenerateChatCompletionResponse->new($payload),
                         );
                     };
-                    if( $msg->state eq 'finished' ) {
+                    if( $msg->{state} eq 'finished' ) {
                         $queue->enqueue( undef );
                     }
                 });
@@ -295,7 +297,7 @@ sub generateChatCompletion( $self, %options ) {
         }
     });
 
-    $tx->res->once( progress => sub($msg, $state,$offset) {
+    $tx->res->once( progress => sub($msg, @) {
         $r1->resolve( $tx );
         undef $r1;
     });
@@ -443,7 +445,7 @@ sub createModel( $self, %options ) {
     my $r1 = Future::Mojo->new();
     use Future::Queue;
     my $queue = Future::Queue->new;
-    my $res = $queue->curr;
+    my $res = $queue->head;
     our @store; # we should use ->retain() instead
     push @store, $r1->then( sub( $tx ) {
         my $resp = $tx->res;
@@ -455,18 +457,20 @@ sub createModel( $self, %options ) {
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/x-ndjson' ) {
                 # we only handle ndjson currently
-    my $leftover = '';
-                $resp->on(progress => sub($msg,$state,$offset) {
-                    my $fresh = $leftover . substr( $msg->body, $offset );
+                my $handled_offset = 0;
+                $resp->on(progress => sub($msg,@) {
+                    my $fresh = substr( $msg->body, $handled_offset );
+                    my $body = $msg->body;
+                    $body =~ s/[^\r\n]+\z//; # Strip any unfinished line
+                    $handled_offset = length $body;
                     my @lines = split /\n/, $fresh;
-                    $leftover = pop @lines; # an empty string
                     for (@lines) {
                         my $payload = decode_json( $_ );
                         $queue->enqueue(
                             AI::Ollama::CreateModelResponse->new($payload),
                         );
                     };
-                    if( $msg->state eq 'finished' ) {
+                    if( $msg->{state} eq 'finished' ) {
                         $queue->enqueue( undef );
                     }
                 });
@@ -474,7 +478,7 @@ sub createModel( $self, %options ) {
         }
     });
 
-    $tx->res->once( progress => sub($msg, $state,$offset) {
+    $tx->res->once( progress => sub($msg, @) {
         $r1->resolve( $tx );
         undef $r1;
     });
@@ -793,18 +797,20 @@ sub generateCompletion( $self, %options ) {
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/x-ndjson' ) {
                 # we only handle ndjson currently
-    my $leftover = '';
-                $resp->on(progress => sub($msg,$state,$offset) {
-                    my $fresh = $leftover . substr( $msg->body, $offset );
+                my $handled_offset = 0;
+                $resp->on(progress => sub($msg,@) {
+                    my $fresh = substr( $msg->body, $handled_offset );
+                    my $body = $msg->body;
+                    $body =~ s/[^\r\n]+\z//; # Strip any unfinished line
+                    $handled_offset = length $body;
                     my @lines = split /\n/, $fresh;
-                    $leftover = pop @lines; # an empty string
                     for (@lines) {
                         my $payload = decode_json( $_ );
                         $queue->enqueue(
                             AI::Ollama::GenerateCompletionResponse->new($payload),
                         );
                     };
-                    if( $msg->state eq 'finished' ) {
+                    if( $msg->{state} eq 'finished' ) {
                         $queue->enqueue( undef );
                     }
                 });
@@ -812,7 +818,7 @@ sub generateCompletion( $self, %options ) {
         }
     });
 
-    $tx->res->once( progress => sub($msg, $state,$offset) {
+    $tx->res->once( progress => sub($msg, @) {
         $r1->resolve( $tx );
         undef $r1;
     });

@@ -91,7 +91,7 @@ my %typemap = (
     string => 'Str',
     number => 'Num',
     integer => 'Int',
-    boolean => 'Bool',
+    #boolean => 'Bool', # a conflict between JSON::PP::Boolean and Type::Tiny
     object  => 'Object',
 );
 
@@ -110,6 +110,7 @@ sub map_type( $elt ) {
         return $typemap{ $type }
     } else {
         warn "Unknown type '$type'";
+        return '';
     }
 }
 
@@ -142,7 +143,10 @@ sub as_hash( $self ) {
 
 has '<%= $prop %>' => (
     is       => 'ro',
-    isa      => <%= map_type( $p ) %>,
+% my $type = map_type( $p );
+% if( $type ) {
+    isa      => <%= $type %>,
+% };
 % if( grep {$_ eq $prop} $elt->{required}->@*) {
     required => 1,
 % }

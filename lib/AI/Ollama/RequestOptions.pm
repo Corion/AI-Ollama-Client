@@ -18,7 +18,6 @@ Enable embedding only. (Default: false)
 
 has 'embedding_only' => (
     is       => 'ro',
-    isa      => Bool,
 );
 
 =head2 C<< f16_kv >>
@@ -29,7 +28,6 @@ Enable f16 key/value. (Default: false)
 
 has 'f16_kv' => (
     is       => 'ro',
-    isa      => Bool,
 );
 
 =head2 C<< frequency_penalty >>
@@ -51,7 +49,6 @@ Enable logits all. (Default: false)
 
 has 'logits_all' => (
     is       => 'ro',
-    isa      => Bool,
 );
 
 =head2 C<< low_vram >>
@@ -62,7 +59,6 @@ Enable low VRAM mode. (Default: false)
 
 has 'low_vram' => (
     is       => 'ro',
-    isa      => Bool,
 );
 
 =head2 C<< main_gpu >>
@@ -194,7 +190,6 @@ Enable NUMA support. (Default: false)
 
 has 'numa' => (
     is       => 'ro',
-    isa      => Bool,
 );
 
 =head2 C<< penalize_newline >>
@@ -205,7 +200,6 @@ Penalize newlines in the output. (Default: false)
 
 has 'penalize_newline' => (
     is       => 'ro',
-    isa      => Bool,
 );
 
 =head2 C<< presence_penalty >>
@@ -348,7 +342,6 @@ Enable mlock. (Default: false)
 
 has 'use_mlock' => (
     is       => 'ro',
-    isa      => Bool,
 );
 
 =head2 C<< use_mmap >>
@@ -359,7 +352,6 @@ Enable mmap. (Default: false)
 
 has 'use_mmap' => (
     is       => 'ro',
-    isa      => Bool,
 );
 
 =head2 C<< vocab_only >>
@@ -370,7 +362,6 @@ Enable vocab only. (Default: false)
 
 has 'vocab_only' => (
     is       => 'ro',
-    isa      => Bool,
 );
 
 

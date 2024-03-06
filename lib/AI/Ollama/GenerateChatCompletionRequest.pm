@@ -86,7 +86,6 @@ If `false` the response will be returned as a single response object, otherwise 
 
 has 'stream' => (
     is       => 'ro',
-    isa      => Bool,
 );
 
 

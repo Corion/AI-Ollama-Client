@@ -40,7 +40,6 @@ Whether the response has completed.
 
 has 'done' => (
     is       => 'ro',
-    isa      => Bool,
 );
 
 =head2 C<< eval_count >>

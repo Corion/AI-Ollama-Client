@@ -110,7 +110,6 @@ You may choose to use the `raw` parameter if you are specifying a full templated
 
 has 'raw' => (
     is       => 'ro',
-    isa      => Bool,
 );
 
 =head2 C<< stream >>
@@ -121,7 +120,6 @@ If `false` the response will be returned as a single response object, otherwise 
 
 has 'stream' => (
     is       => 'ro',
-    isa      => Bool,
 );
 
 =head2 C<< system >>

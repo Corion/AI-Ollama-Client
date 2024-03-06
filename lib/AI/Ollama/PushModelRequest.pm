@@ -20,7 +20,6 @@ Only use this if you are pushing to your library during development.
 
 has 'insecure' => (
     is       => 'ro',
-    isa      => Bool,
 );
 
 =head2 C<< name >>
@@ -43,7 +42,6 @@ If `false` the response will be returned as a single response object, otherwise 
 
 has 'stream' => (
     is       => 'ro',
-    isa      => Bool,
 );
 
 
