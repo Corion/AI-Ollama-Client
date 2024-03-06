@@ -275,10 +275,10 @@ sub <%= $method->{name} %>( $self, %options ) {
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
-    say $results;
-    say $tx->req->to_string;
-
-    # We need to start $tx here and then append us to the promise?!
+    if( $results->{error}) {
+        say $results;
+        say $tx->req->to_string;
+    };
 
 %# We want to handle both here, streaming (ndjson) and plain responses
 %# Plain responses are easy, but for streamed, we want to register an ->on('progress')

@@ -78,10 +78,10 @@ sub checkBlob( $self, %options ) {
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
-    say $results;
-    say $tx->req->to_string;
-
-    # We need to start $tx here and then append us to the promise?!
+    if( $results->{error}) {
+        say $results;
+        say $tx->req->to_string;
+    };
 
 
     my $r1 = Future::Mojo->new();
@@ -139,10 +139,10 @@ sub createBlob( $self, %options ) {
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
-    say $results;
-    say $tx->req->to_string;
-
-    # We need to start $tx here and then append us to the promise?!
+    if( $results->{error}) {
+        say $results;
+        say $tx->req->to_string;
+    };
 
 
     my $r1 = Future::Mojo->new();
@@ -255,10 +255,10 @@ sub generateChatCompletion( $self, %options ) {
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
-    say $results;
-    say $tx->req->to_string;
-
-    # We need to start $tx here and then append us to the promise?!
+    if( $results->{error}) {
+        say $results;
+        say $tx->req->to_string;
+    };
 
 
     my $r1 = Future::Mojo->new();
@@ -353,10 +353,10 @@ sub copyModel( $self, %options ) {
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
-    say $results;
-    say $tx->req->to_string;
-
-    # We need to start $tx here and then append us to the promise?!
+    if( $results->{error}) {
+        say $results;
+        say $tx->req->to_string;
+    };
 
 
     my $r1 = Future::Mojo->new();
@@ -436,10 +436,10 @@ sub createModel( $self, %options ) {
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
-    say $results;
-    say $tx->req->to_string;
-
-    # We need to start $tx here and then append us to the promise?!
+    if( $results->{error}) {
+        say $results;
+        say $tx->req->to_string;
+    };
 
 
     my $r1 = Future::Mojo->new();
@@ -528,10 +528,10 @@ sub deleteModel( $self, %options ) {
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
-    say $results;
-    say $tx->req->to_string;
-
-    # We need to start $tx here and then append us to the promise?!
+    if( $results->{error}) {
+        say $results;
+        say $tx->req->to_string;
+    };
 
 
     my $r1 = Future::Mojo->new();
@@ -611,10 +611,10 @@ sub generateEmbedding( $self, %options ) {
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
-    say $results;
-    say $tx->req->to_string;
-
-    # We need to start $tx here and then append us to the promise?!
+    if( $results->{error}) {
+        say $results;
+        say $tx->req->to_string;
+    };
 
 
     my $r1 = Future::Mojo->new();
@@ -776,10 +776,10 @@ sub generateCompletion( $self, %options ) {
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
-    say $results;
-    say $tx->req->to_string;
-
-    # We need to start $tx here and then append us to the promise?!
+    if( $results->{error}) {
+        say $results;
+        say $tx->req->to_string;
+    };
 
 
     my $r1 = Future::Mojo->new();
@@ -887,10 +887,10 @@ sub pullModel( $self, %options ) {
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
-    say $results;
-    say $tx->req->to_string;
-
-    # We need to start $tx here and then append us to the promise?!
+    if( $results->{error}) {
+        say $results;
+        say $tx->req->to_string;
+    };
 
 
     my $r1 = Future::Mojo->new();
@@ -977,10 +977,10 @@ sub pushModel( $self, %options ) {
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
-    say $results;
-    say $tx->req->to_string;
-
-    # We need to start $tx here and then append us to the promise?!
+    if( $results->{error}) {
+        say $results;
+        say $tx->req->to_string;
+    };
 
 
     my $r1 = Future::Mojo->new();
@@ -1051,10 +1051,10 @@ sub showModelInfo( $self, %options ) {
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
-    say $results;
-    say $tx->req->to_string;
-
-    # We need to start $tx here and then append us to the promise?!
+    if( $results->{error}) {
+        say $results;
+        say $tx->req->to_string;
+    };
 
 
     my $r1 = Future::Mojo->new();
@@ -1111,10 +1111,10 @@ sub listModels( $self, %options ) {
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
-    say $results;
-    say $tx->req->to_string;
-
-    # We need to start $tx here and then append us to the promise?!
+    if( $results->{error}) {
+        say $results;
+        say $tx->req->to_string;
+    };
 
 
     my $r1 = Future::Mojo->new();
