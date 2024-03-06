@@ -316,8 +316,8 @@ sub <%= $method->{name} %>( $self, %options ) {
             if( $ct eq '<%= $ct %>' ) {
                 # we only handle ndjson currently
     my $leftover = '';
-                $resp->on(progress => sub($msg,$state,$offset) {
                     my $fresh = $leftover . substr( $msg->body, $offset );
+                $resp->on(progress => sub($msg,@) {
                     my @lines = split /\n/, $fresh;
                     $leftover = pop @lines; # an empty string
                     for (@lines) {
@@ -364,7 +364,7 @@ sub <%= $method->{name} %>( $self, %options ) {
     });
 
 % if( $is_streaming ) {
-    $tx->res->once( progress => sub($msg, $state,$offset) {
+    $tx->res->once( progress => sub($msg, @) {
         $r1->resolve( $tx );
         undef $r1;
     });
