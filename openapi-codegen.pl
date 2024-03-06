@@ -274,14 +274,33 @@ sub <%= $method->{name} %>( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
+
+%# We want to handle both here, streaming (ndjson) and plain responses
+%# Plain responses are easy, but for streamed, we want to register an ->on('progress')
+%# handler instead of the plain part completely. In the ->on('progress') part,
+%# we still run the handler, so maybe that is the same ?!
+% my $is_streaming =    exists $elt->{responses}->{200}
+%                    && $elt->{responses}->{200}->{content}
+%                    && [keys $elt->{responses}->{200}->{content}->%*]->[0] eq 'application/x-ndjson'
+%                    ;
+
     my $r1 = Future::Mojo->new();
+% if( $is_streaming ) {
+    use Future::Queue;
+    my $queue = Future::Queue->new;
+    my $res = $queue->curr;
+    our @store; # we should use ->retain() instead
+    push @store, $r1->then( sub( $tx ) {
+% } else {
     my $res = $r1->then( sub( $tx ) {
+% }
         my $resp = $tx->res;
         # Should we validate using OpenAPI::Modern here?!
 %# Should this be its own subroutine instead?!
 % for my $code (sort keys $elt->{responses}->%*) {
 %     my $info = $elt->{responses}->{ $code };
 %# XXX support 2xx / 5xx codes through =~
+%# XXX if streaming, we need to handle a non-streaming error response!
         if( $resp->code == <%= $code %> ) {
             # <%= $info->{description} %>
 %       # Check the content type
@@ -289,10 +308,41 @@ sub <%= $method->{name} %>( $self, %options ) {
 %       if( $info->{content} ) {
 %           for my $ct (sort keys $info->{content}->%*) {
             my $ct = $resp->headers->content_type;
+% if( $is_streaming ) {
+            return unless $ct;
+% }
             $ct =~ s/;\s+.*//;
+%               if( $is_streaming ) {
             if( $ct eq '<%= $ct %>' ) {
+                # we only handle ndjson currently
+    my $leftover = '';
+                $resp->on(progress => sub($msg,$state,$offset) {
+                    my $fresh = $leftover . substr( $msg->body, $offset );
+                    my @lines = split /\n/, $fresh;
+                    $leftover = pop @lines; # an empty string
+                    for (@lines) {
+                        my $payload = decode_json( $_ );
+                        $queue->enqueue(
+%               if( my $restype = $info->{content}->{$ct}->{schema}) {
+                            <%= $prefix %>::<%= $restype->{name} %>->new($payload),
+%               } else {
+                            $payload
+%               }
+                        );
+                    };
+                    if( $msg->state eq 'finished' ) {
+                        $queue->enqueue( undef );
+                    }
+                });
+%               } else {
+            if( $ct eq '<%= $ct %>' ) {
+%# These handlers for content types should come from templates? Or maybe
+%# from a subroutine?!
 %               if( $ct eq 'application/json' ) {
                 my $payload = $resp->json();
+%               } elsif( $ct eq 'application/x-ndjson' ) {
+                # code missing to hack up ndjson into hashes
+                my $payload = $resp->body();
 %               } else {
                 my $payload = $resp->body();
 %               }
@@ -302,6 +352,7 @@ sub <%= $method->{name} %>( $self, %options ) {
                 );
 %               } else {
                 return Future::Mojo->done( $payload );
+%               }
 %               }
             }
 %           }

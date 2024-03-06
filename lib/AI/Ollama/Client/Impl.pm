@@ -258,28 +258,47 @@ sub generateChatCompletion( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $r1 = Future::Mojo->new();
-    my $res = $r1->then( sub( $tx ) {
-        my $resp = $tx->res;
 
+
+    my $r1 = Future::Mojo->new();
+    use Future::Queue;
+    my $queue = Future::Queue->new;
+    my $res = $queue->curr;
+    our @store; # we should use ->retain() instead
+    push @store, $r1->then( sub( $tx ) {
+        my $resp = $tx->res;
+        # Should we validate using OpenAPI::Modern here?!
         if( $resp->code == 200 ) {
             # Successful operation.
             my $ct = $resp->headers->content_type;
+            return unless $ct;
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/x-ndjson' ) {
-                my $payload = $resp->body();
-                return Future::Mojo->done(
-                    AI::Ollama::GenerateChatCompletionResponse->new($payload),
-                );
+                # we only handle ndjson currently
+    my $leftover = '';
+                $resp->on(progress => sub($msg,$state,$offset) {
+                    my $fresh = $leftover . substr( $msg->body, $offset );
+                    my @lines = split /\n/, $fresh;
+                    $leftover = pop @lines; # an empty string
+                    for (@lines) {
+                        my $payload = decode_json( $_ );
+                        $queue->enqueue(
+                            AI::Ollama::GenerateChatCompletionResponse->new($payload),
+                        );
+                    };
+                    if( $msg->state eq 'finished' ) {
+                        $queue->enqueue( undef );
+                    }
+                });
             }
         }
     });
 
-    # Start our transaction
-    $tx = $self->ua->start_p($tx)->then(sub($tx) {
+    $tx->res->once( progress => sub($msg, $state,$offset) {
         $r1->resolve( $tx );
         undef $r1;
     });
+    $tx = $self->ua->start($tx);
 
     return $res
 }
@@ -418,26 +437,43 @@ sub createModel( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $r1 = Future::Mojo->new();
-    my $res = $r1->then( sub( $tx ) {
-        my $resp = $tx->res;
 
+
+    my $r1 = Future::Mojo->new();
+    use Future::Queue;
+    my $queue = Future::Queue->new;
+    my $res = $queue->curr;
+    our @store; # we should use ->retain() instead
+    push @store, $r1->then( sub( $tx ) {
+        my $resp = $tx->res;
+        # Should we validate using OpenAPI::Modern here?!
         if( $resp->code == 200 ) {
             # Successful operation.
             my $ct = $resp->headers->content_type;
+            return unless $ct;
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/x-ndjson' ) {
-                my $payload = $resp->body();
-                return Future::Mojo->done(
-                    AI::Ollama::CreateModelResponse->new($payload),
-                );
+                # we only handle ndjson currently
+    my $leftover = '';
+                $resp->on(progress => sub($msg,$state,$offset) {
+                    my $fresh = $leftover . substr( $msg->body, $offset );
+                    my @lines = split /\n/, $fresh;
+                    $leftover = pop @lines; # an empty string
+                    for (@lines) {
+                        my $payload = decode_json( $_ );
+                        $queue->enqueue(
+                            AI::Ollama::CreateModelResponse->new($payload),
+                        );
+                    };
+                    if( $msg->state eq 'finished' ) {
+                        $queue->enqueue( undef );
+                    }
+                });
             }
         }
     });
 
     $tx->res->once( progress => sub($msg, $state,$offset) {
-        # Do magic here
-        # Maybe this is just the same?!
         $r1->resolve( $tx );
         undef $r1;
     });
@@ -739,26 +775,43 @@ sub generateCompletion( $self, %options ) {
     say $tx->req->to_string;
 
     # We need to start $tx here and then append us to the promise?!
-    my $r1 = Future::Mojo->new();
-    my $res = $r1->then( sub( $tx ) {
-        my $resp = $tx->res;
 
+
+    my $r1 = Future::Mojo->new();
+    use Future::Queue;
+    my $queue = Future::Queue->new;
+    my $res = $queue->curr;
+    our @store; # we should use ->retain() instead
+    push @store, $r1->then( sub( $tx ) {
+        my $resp = $tx->res;
+        # Should we validate using OpenAPI::Modern here?!
         if( $resp->code == 200 ) {
             # Successful operation.
             my $ct = $resp->headers->content_type;
+            return unless $ct;
             $ct =~ s/;\s+.*//;
             if( $ct eq 'application/x-ndjson' ) {
-                my $payload = $resp->body();
-                return Future::Mojo->done(
-                    AI::Ollama::GenerateCompletionResponse->new($payload),
-                );
+                # we only handle ndjson currently
+    my $leftover = '';
+                $resp->on(progress => sub($msg,$state,$offset) {
+                    my $fresh = $leftover . substr( $msg->body, $offset );
+                    my @lines = split /\n/, $fresh;
+                    $leftover = pop @lines; # an empty string
+                    for (@lines) {
+                        my $payload = decode_json( $_ );
+                        $queue->enqueue(
+                            AI::Ollama::GenerateCompletionResponse->new($payload),
+                        );
+                    };
+                    if( $msg->state eq 'finished' ) {
+                        $queue->enqueue( undef );
+                    }
+                });
             }
         }
     });
 
     $tx->res->once( progress => sub($msg, $state,$offset) {
-        # Do magic here
-        # Maybe this is just the same?!
         $r1->resolve( $tx );
         undef $r1;
     });
