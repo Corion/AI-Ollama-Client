@@ -330,7 +330,7 @@ sub <%= $method->{name} %>( $self, %options ) {
 %               }
                         );
                     };
-                    if( $msg->state eq 'finished' ) {
+                    if( $msg->{state} eq 'finished' ) {
                         $queue->enqueue( undef );
                     }
                 });
