@@ -3,6 +3,7 @@ use 5.020;
 use Mojo::JSON 'decode_json';
 use experimental 'signatures';
 use AI::Ollama::Client;
+use Future::Utils 'repeat';
 
 my $ol = AI::Ollama::Client->new(
     server => 'http://192.168.1.97:11434/api',
@@ -24,28 +25,15 @@ my $ol = AI::Ollama::Client->new(
 my $tx = $ol->generateCompletion(
     model => 'llama2',
     prompt => 'How are you?',
-)->then( sub ($res) {
-    use Data::Dumper;
-    warn Dumper $res;
-});
+);
 
-sub decode_ndjson( $stream, $r_buffer ) {
-    if( $$r_buffer ) {
-        $stream = $$r_buffer . $stream;
-        $$r_buffer = '';
-    };
-
-    my @res;
-    while( $stream and $stream =~ m/^(.+[\]\"\}])$/gm ) {
-        my $payload = eval { decode_json($1) };
-        if( $@ ) {
-            $$r_buffer = $stream;
-            last;
-        }
-        push @res, $payload;
-    }
-    return @res
-}
+repeat {
+    $| = 1;
+    my( $next, $resp ) = $tx->get;
+    print $resp->response;
+    $tx = $next;
+    Future->done( $resp->done );
+} until => sub($done) { $done->get };
 
 #my $buffer;
 #$tx->res->on( progress => sub($stream) {
