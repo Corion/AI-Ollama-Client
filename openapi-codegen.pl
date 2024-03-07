@@ -198,9 +198,25 @@ has 'server' => (
 
 % for my $method ($methods->@*) {
 % my $elt = $method->{elt};
+% my $is_streaming =    exists $elt->{responses}->{200}
+%                    && $elt->{responses}->{200}->{content}
+%                    && [keys $elt->{responses}->{200}->{content}->%*]->[0] eq 'application/x-ndjson'
+%                    ;
 =head2 C<< <%= $method->{name} %> >>
 
+% if( $is_streaming ) {
+  use Future::Utils 'repeat';
+  my $tx = $client-><%= $method->{name} %>();
+  repeat {
+      my( $next, $resp ) = $tx->get;
+      # ...
+      $tx = $next;
+
+      Future::Mojo->done( defined $resp );
+  } until => sub($done) { $done->get };
+% } else {
   my $res = $client-><%= $method->{name} %>()->get;
+% }
 
 <%= $elt->{summary} =~ s/\s*$//r %>
 
@@ -284,10 +300,6 @@ sub <%= $method->{name} %>( $self, %options ) {
 %# Plain responses are easy, but for streamed, we want to register an ->on('progress')
 %# handler instead of the plain part completely. In the ->on('progress') part,
 %# we still run the handler, so maybe that is the same ?!
-% my $is_streaming =    exists $elt->{responses}->{200}
-%                    && $elt->{responses}->{200}->{content}
-%                    && [keys $elt->{responses}->{200}->{content}->%*]->[0] eq 'application/x-ndjson'
-%                    ;
 
     my $r1 = Future::Mojo->new();
 % if( $is_streaming ) {

@@ -166,7 +166,15 @@ sub createBlob( $self, %options ) {
 
 =head2 C<< generateChatCompletion >>
 
-  my $res = $client->generateChatCompletion()->get;
+  use Future::Utils 'repeat';
+  my $tx = $client->generateChatCompletion();
+  repeat {
+      my( $next, $resp ) = $tx->get;
+      # ...
+      $tx = $next;
+
+      Future::Mojo->done( defined $resp );
+  } until => sub($done) { $done->get };
 
 Generate the next message in a chat with a provided model.
 
@@ -381,7 +389,15 @@ sub copyModel( $self, %options ) {
 
 =head2 C<< createModel >>
 
-  my $res = $client->createModel()->get;
+  use Future::Utils 'repeat';
+  my $tx = $client->createModel();
+  repeat {
+      my( $next, $resp ) = $tx->get;
+      # ...
+      $tx = $next;
+
+      Future::Mojo->done( defined $resp );
+  } until => sub($done) { $done->get };
 
 Create a model from a Modelfile.
 
@@ -647,7 +663,15 @@ sub generateEmbedding( $self, %options ) {
 
 =head2 C<< generateCompletion >>
 
-  my $res = $client->generateCompletion()->get;
+  use Future::Utils 'repeat';
+  my $tx = $client->generateCompletion();
+  repeat {
+      my( $next, $resp ) = $tx->get;
+      # ...
+      $tx = $next;
+
+      Future::Mojo->done( defined $resp );
+  } until => sub($done) { $done->get };
 
 Generate a response for a given prompt with a provided model.
 
