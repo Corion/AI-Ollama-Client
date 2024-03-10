@@ -279,7 +279,9 @@ sub <%= $method->{name} %>( $self, %options ) {
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
+% if( $content_type ) {
             "Content-Type" => '<%= $content_type %>',
+% }
         }
 % if( $is_json ) {
         => json => $request->as_hash,

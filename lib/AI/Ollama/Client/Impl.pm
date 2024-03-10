@@ -70,7 +70,6 @@ sub checkBlob( $self, %options ) {
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
-            "Content-Type" => '',
         }
         # XXX Need to fill the body
         # => $body,
@@ -1130,7 +1129,6 @@ sub listModels( $self, %options ) {
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
-            "Content-Type" => '',
         }
         # XXX Need to fill the body
         # => $body,
