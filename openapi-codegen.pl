@@ -559,3 +559,12 @@ __END__
 [ ] (optionally) check that the created module file(s) compile
 [ ] Split out the templates into separate files
 [ ] Properly handle URI templates
+[ ] Handle variables (at all)
+[ ] Handle variables in servers:
+    servers:
+      - url: https://{host}/api/v2
+        variables:
+          host:
+            default: someserver.example
+[ ] handle https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/uspto.yaml
+[ ] handle https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore-expanded.yaml
