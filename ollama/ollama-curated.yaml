@@ -1,4 +1,5 @@
 openapi: 3.1.0
+# https://github.com/davidmigloz/langchain_dart/blob/main/packages/ollama_dart/oas/ollama-curated.yaml
 
 info:
   title: Ollama API
