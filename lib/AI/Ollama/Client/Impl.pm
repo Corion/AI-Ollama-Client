@@ -3,10 +3,12 @@ package AI::Ollama::Client::Impl 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
+use PerlX::Maybe;
 
 # These should go into a ::Role
 use YAML::PP;
 use Mojo::UserAgent;
+use Mojo::URL;
 use Mojo::JSON 'encode_json', 'decode_json';
 use OpenAPI::Modern;
 
@@ -57,6 +59,14 @@ has 'server' => (
 
 Check to see if a blob exists on the Ollama server which is useful when creating models.
 
+=head3 Parameters
+
+=item B<< digest >>
+
+the SHA256 digest of the blob
+
+=cut
+
 
 
 =cut
@@ -64,7 +74,11 @@ Check to see if a blob exists on the Ollama server which is useful when creating
 sub checkBlob( $self, %options ) {
 
     my $method = 'HEAD';
-    my $url = $self->server . '/blobs/{digest}';
+    my $template = URI::Template->new( '/blobs/{digest}' );
+    my $path = $template->process(
+              'digest' => delete $options{'digest'},
+    );
+    my $url = Mojo::URL->new( $self->server . $path );
 
               # don't know how to handle this ...
     my $tx = $self->ua->build_tx(
@@ -112,6 +126,14 @@ sub checkBlob( $self, %options ) {
 
 Create a blob from a file. Returns the server file path.
 
+=head3 Parameters
+
+=item B<< digest >>
+
+the SHA256 digest of the blob
+
+=cut
+
 
 =head3 Options
 
@@ -122,7 +144,11 @@ Create a blob from a file. Returns the server file path.
 sub createBlob( $self, %options ) {
 
     my $method = 'POST';
-    my $url = $self->server . '/blobs/{digest}';
+    my $template = URI::Template->new( '/blobs/{digest}' );
+    my $path = $template->process(
+              'digest' => delete $options{'digest'},
+    );
+    my $url = Mojo::URL->new( $self->server . $path );
 
     my $request = AI::Ollama::->new( \%options );
     # resp. validate %options against 
@@ -176,6 +202,7 @@ sub createBlob( $self, %options ) {
   } until => sub($done) { $done->get };
 
 Generate the next message in a chat with a provided model.
+
 
 
 =head3 Options
@@ -247,7 +274,7 @@ Returns a L<< AI::Ollama::GenerateChatCompletionResponse >>.
 sub generateChatCompletion( $self, %options ) {
 
     my $method = 'POST';
-    my $url = $self->server . '/chat';
+    my $url = Mojo::URL->new( $self->server . '/chat');
 
     my $request = AI::Ollama::GenerateChatCompletionRequest->new( \%options );
     # resp. validate %options against GenerateChatCompletionRequest
@@ -321,6 +348,7 @@ sub generateChatCompletion( $self, %options ) {
 Creates a model with another name from an existing model.
 
 
+
 =head3 Options
 
 =over 4
@@ -346,7 +374,7 @@ Name of the model to copy.
 sub copyModel( $self, %options ) {
 
     my $method = 'POST';
-    my $url = $self->server . '/copy';
+    my $url = Mojo::URL->new( $self->server . '/copy');
 
     my $request = AI::Ollama::CopyModelRequest->new( \%options );
     # resp. validate %options against CopyModelRequest
@@ -401,6 +429,7 @@ sub copyModel( $self, %options ) {
 Create a model from a Modelfile.
 
 
+
 =head3 Options
 
 =over 4
@@ -437,7 +466,7 @@ Returns a L<< AI::Ollama::CreateModelResponse >>.
 sub createModel( $self, %options ) {
 
     my $method = 'POST';
-    my $url = $self->server . '/create';
+    my $url = Mojo::URL->new( $self->server . '/create');
 
     my $request = AI::Ollama::CreateModelRequest->new( \%options );
     # resp. validate %options against CreateModelRequest
@@ -511,6 +540,7 @@ sub createModel( $self, %options ) {
 Delete a model and its data.
 
 
+
 =head3 Options
 
 =over 4
@@ -530,7 +560,7 @@ Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` a
 sub deleteModel( $self, %options ) {
 
     my $method = 'DELETE';
-    my $url = $self->server . '/delete';
+    my $url = Mojo::URL->new( $self->server . '/delete');
 
     my $request = AI::Ollama::DeleteModelRequest->new( \%options );
     # resp. validate %options against DeleteModelRequest
@@ -577,6 +607,7 @@ sub deleteModel( $self, %options ) {
 Generate embeddings from a model.
 
 
+
 =head3 Options
 
 =over 4
@@ -613,7 +644,7 @@ Returns a L<< AI::Ollama::GenerateEmbeddingResponse >>.
 sub generateEmbedding( $self, %options ) {
 
     my $method = 'POST';
-    my $url = $self->server . '/embeddings';
+    my $url = Mojo::URL->new( $self->server . '/embeddings');
 
     my $request = AI::Ollama::GenerateEmbeddingRequest->new( \%options );
     # resp. validate %options against GenerateEmbeddingRequest
@@ -674,6 +705,7 @@ sub generateEmbedding( $self, %options ) {
   } until => sub($done) { $done->get };
 
 Generate a response for a given prompt with a provided model.
+
 
 
 =head3 Options
@@ -787,7 +819,7 @@ Returns a L<< AI::Ollama::GenerateCompletionResponse >>.
 sub generateCompletion( $self, %options ) {
 
     my $method = 'POST';
-    my $url = $self->server . '/generate';
+    my $url = Mojo::URL->new( $self->server . '/generate');
 
     my $request = AI::Ollama::GenerateCompletionRequest->new( \%options );
     # resp. validate %options against GenerateCompletionRequest
@@ -861,6 +893,7 @@ sub generateCompletion( $self, %options ) {
 Download a model from the ollama library.
 
 
+
 =head3 Options
 
 =over 4
@@ -899,7 +932,7 @@ Returns a L<< AI::Ollama::PullModelResponse >>.
 sub pullModel( $self, %options ) {
 
     my $method = 'POST';
-    my $url = $self->server . '/pull';
+    my $url = Mojo::URL->new( $self->server . '/pull');
 
     my $request = AI::Ollama::PullModelRequest->new( \%options );
     # resp. validate %options against PullModelRequest
@@ -954,6 +987,7 @@ sub pullModel( $self, %options ) {
 Upload a model to a model library.
 
 
+
 =head3 Options
 
 =over 4
@@ -990,7 +1024,7 @@ Returns a L<< AI::Ollama::PushModelResponse >>.
 sub pushModel( $self, %options ) {
 
     my $method = 'POST';
-    my $url = $self->server . '/push';
+    my $url = Mojo::URL->new( $self->server . '/push');
 
     my $request = AI::Ollama::PushModelRequest->new( \%options );
     # resp. validate %options against PushModelRequest
@@ -1045,6 +1079,7 @@ sub pushModel( $self, %options ) {
 Show details about a model including modelfile, template, parameters, license, and system prompt.
 
 
+
 =head3 Options
 
 =over 4
@@ -1065,7 +1100,7 @@ Returns a L<< AI::Ollama::ModelInfo >>.
 sub showModelInfo( $self, %options ) {
 
     my $method = 'POST';
-    my $url = $self->server . '/show';
+    my $url = Mojo::URL->new( $self->server . '/show');
 
     my $request = AI::Ollama::ModelInfoRequest->new( \%options );
     # resp. validate %options against ModelInfoRequest
@@ -1120,6 +1155,7 @@ sub showModelInfo( $self, %options ) {
 List models that are available locally.
 
 
+
 Returns a L<< AI::Ollama::ModelsResponse >>.
 
 =cut
@@ -1127,7 +1163,7 @@ Returns a L<< AI::Ollama::ModelsResponse >>.
 sub listModels( $self, %options ) {
 
     my $method = 'GET';
-    my $url = $self->server . '/tags';
+    my $url = Mojo::URL->new( $self->server . '/tags');
 
               # don't know how to handle this ...
     my $tx = $self->ua->build_tx(
