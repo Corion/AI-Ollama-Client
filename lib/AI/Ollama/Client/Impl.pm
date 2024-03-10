@@ -255,6 +255,7 @@ sub generateChatCompletion( $self, %options ) {
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
+            'Accept' => 'application/x-ndjson',
             "Content-Type" => 'application/json',
         }
         => json => $request->as_hash,
@@ -445,6 +446,7 @@ sub createModel( $self, %options ) {
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
+            'Accept' => 'application/x-ndjson',
             "Content-Type" => 'application/json',
         }
         => json => $request->as_hash,
@@ -621,6 +623,7 @@ sub generateEmbedding( $self, %options ) {
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
+            'Accept' => 'application/json',
             "Content-Type" => 'application/json',
         }
         => json => $request->as_hash,
@@ -794,6 +797,7 @@ sub generateCompletion( $self, %options ) {
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
+            'Accept' => 'application/x-ndjson',
             "Content-Type" => 'application/json',
         }
         => json => $request->as_hash,
@@ -906,6 +910,7 @@ sub pullModel( $self, %options ) {
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
+            'Accept' => 'application/json',
             "Content-Type" => 'application/json',
         }
         => json => $request->as_hash,
@@ -996,6 +1001,7 @@ sub pushModel( $self, %options ) {
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
+            'Accept' => 'application/json',
             "Content-Type" => 'application/json',
         }
         => json => $request->as_hash,
@@ -1070,6 +1076,7 @@ sub showModelInfo( $self, %options ) {
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
+            'Accept' => 'application/json',
             "Content-Type" => 'application/json',
         }
         => json => $request->as_hash,
@@ -1129,6 +1136,7 @@ sub listModels( $self, %options ) {
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
+            'Accept' => 'application/json',
         }
         # XXX Need to fill the body
         # => $body,

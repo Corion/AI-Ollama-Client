@@ -119,6 +119,17 @@ sub openapi_submodules( $schema ) {
     map { $_ => $schemata->{ $_ } } sort keys $schemata->%*
 }
 
+sub openapi_response_content_types( $elt ) {
+    my %known;
+    for my $code (sort keys $elt->{responses}->%*) {
+        my $info = $elt->{responses}->{ $code };
+        for my $ct (sort keys $info->{content}->%*) {
+            $known{ $ct } = 1;
+        };
+    };
+    return sort keys %known;
+}
+
 my %template;
 $template{object} = <<'__OBJECT__';
 package <%= $prefix %>::<%= $name %> 0.01;
@@ -279,6 +290,10 @@ sub <%= $method->{name} %>( $self, %options ) {
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
+% my $known_response_types = join ",", openapi_response_content_types($elt);
+% if( $known_response_types ) {
+            'Accept' => '<%= $known_response_types %>',
+% }
 % if( $content_type ) {
             "Content-Type" => '<%= $content_type %>',
 % }
