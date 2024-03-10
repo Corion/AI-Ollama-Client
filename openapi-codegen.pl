@@ -331,7 +331,7 @@ sub <%= $method->{name} %>( $self, %options ) {
         my $resp = $tx->res;
         # Should we validate using OpenAPI::Modern here?!
 %# Should this be its own subroutine instead?!
-% for my $code (sort keys $elt->{responses}->%*) {
+% for my $code (sort keys $elt->{responses}->%*) {                             # response code s
 %     my $info = $elt->{responses}->{ $code };
 %# XXX support 2xx / 5xx codes through =~
 %# XXX if streaming, we need to handle a non-streaming error response!
@@ -339,14 +339,14 @@ sub <%= $method->{name} %>( $self, %options ) {
             # <%= $info->{description} %>
 %       # Check the content type
 %       # Will we always have a content type?!
-%       if( $info->{content} ) {
+%       if( keys $info->{content}->%* ) {
 %           for my $ct (sort keys $info->{content}->%*) {
             my $ct = $resp->headers->content_type;
 % if( $is_streaming ) {
             return unless $ct;
 % }
             $ct =~ s/;\s+.*//;
-%               if( $is_streaming ) {
+%               if( $is_streaming ) {                                          # streaming
             if( $ct eq '<%= $ct %>' ) {
                 # we only handle ndjson currently
                 my $handled_offset = 0;
@@ -370,14 +370,14 @@ sub <%= $method->{name} %>( $self, %options ) {
                         $queue->enqueue( undef );
                     }
                 });
-%               } else {
+%               } else {                                                       # non-streaming
             if( $ct eq '<%= $ct %>' ) {
 %# These handlers for content types should come from templates? Or maybe
 %# from a subroutine?!
 %               if( $ct eq 'application/json' ) {
                 my $payload = $resp->json();
 %               } elsif( $ct eq 'application/x-ndjson' ) {
-                # code missing to hack up ndjson into hashes
+                # code missing to hack up ndjson into hashes for a non-streaming response
                 my $payload = $resp->body();
 %               } else {
                 my $payload = $resp->body();
@@ -389,12 +389,12 @@ sub <%= $method->{name} %>( $self, %options ) {
 %               } else {
                 return Future::Mojo->done( $payload );
 %               }
-%               }
+%               }                                                              # non-streaming end
             }
 %           }
-%       } else { # we don't know how to handle this, so pass $res
+%           } else { # we don't know how to handle this, so pass $res          # known content types?
             return Future::Mojo->done($resp);
-%       }
+%           }
         }
 % }
     });
