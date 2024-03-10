@@ -401,7 +401,6 @@ sub <%= $method->{name} %>( $self, %options ) {
 
 % if( $is_streaming ) {
     $tx->res->once( progress => sub($msg, @) {
-    say "Kicking off streaming response loop";
         $r1->resolve( $tx );
         undef $r1;
     });

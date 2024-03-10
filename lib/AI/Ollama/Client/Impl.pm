@@ -306,7 +306,6 @@ sub generateChatCompletion( $self, %options ) {
     });
 
     $tx->res->once( progress => sub($msg, @) {
-    say "Kicking off streaming response loop";
         $r1->resolve( $tx );
         undef $r1;
     });
@@ -497,7 +496,6 @@ sub createModel( $self, %options ) {
     });
 
     $tx->res->once( progress => sub($msg, @) {
-    say "Kicking off streaming response loop";
         $r1->resolve( $tx );
         undef $r1;
     });
@@ -848,7 +846,6 @@ sub generateCompletion( $self, %options ) {
     });
 
     $tx->res->once( progress => sub($msg, @) {
-    say "Kicking off streaming response loop";
         $r1->resolve( $tx );
         undef $r1;
     });
