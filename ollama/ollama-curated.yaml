@@ -258,6 +258,7 @@ components:
           description: (optional) a list of Base64-encoded images to include in the message (for multimodal models such as llava)
           items:
             type: string
+            contentEncoding: base64
             description: Base64-encoded image (for multimodal models such as llava)
             example: iVBORw0KGgoAAAANSUhEUgAAAAkAAAANCAIAAAD0YtNRAAAABnRSTlMA/AD+APzoM1ogAAAAWklEQVR4AWP48+8PLkR7uUdzcMvtU8EhdykHKAciEXL3pvw5FQIURaBDJkARoDhY3zEXiCgCHbNBmAlUiyaBkENoxZSDWnOtBmoAQu7TnT+3WuDOA7KBIkAGAGwiNeqjusp/AAAAAElFTkSuQmCC
         system:
