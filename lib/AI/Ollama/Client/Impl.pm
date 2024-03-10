@@ -72,6 +72,8 @@ the SHA256 digest of the blob
 =cut
 
 sub checkBlob( $self, %options ) {
+    croak "Missing required parameter 'digest'
+        unless exists $options{ 'digest' };
 
     my $method = 'HEAD';
     my $template = URI::Template->new( '/blobs/{digest}' );
@@ -142,6 +144,8 @@ the SHA256 digest of the blob
 =cut
 
 sub createBlob( $self, %options ) {
+    croak "Missing required parameter 'digest'
+        unless exists $options{ 'digest' };
 
     my $method = 'POST';
     my $template = URI::Template->new( '/blobs/{digest}' );
@@ -272,7 +276,6 @@ Returns a L<< AI::Ollama::GenerateChatCompletionResponse >>.
 =cut
 
 sub generateChatCompletion( $self, %options ) {
-
     my $method = 'POST';
     my $url = Mojo::URL->new( $self->server . '/chat');
 
@@ -372,7 +375,6 @@ Name of the model to copy.
 =cut
 
 sub copyModel( $self, %options ) {
-
     my $method = 'POST';
     my $url = Mojo::URL->new( $self->server . '/copy');
 
@@ -464,7 +466,6 @@ Returns a L<< AI::Ollama::CreateModelResponse >>.
 =cut
 
 sub createModel( $self, %options ) {
-
     my $method = 'POST';
     my $url = Mojo::URL->new( $self->server . '/create');
 
@@ -558,7 +559,6 @@ Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` a
 =cut
 
 sub deleteModel( $self, %options ) {
-
     my $method = 'DELETE';
     my $url = Mojo::URL->new( $self->server . '/delete');
 
@@ -642,7 +642,6 @@ Returns a L<< AI::Ollama::GenerateEmbeddingResponse >>.
 =cut
 
 sub generateEmbedding( $self, %options ) {
-
     my $method = 'POST';
     my $url = Mojo::URL->new( $self->server . '/embeddings');
 
@@ -817,7 +816,6 @@ Returns a L<< AI::Ollama::GenerateCompletionResponse >>.
 =cut
 
 sub generateCompletion( $self, %options ) {
-
     my $method = 'POST';
     my $url = Mojo::URL->new( $self->server . '/generate');
 
@@ -930,7 +928,6 @@ Returns a L<< AI::Ollama::PullModelResponse >>.
 =cut
 
 sub pullModel( $self, %options ) {
-
     my $method = 'POST';
     my $url = Mojo::URL->new( $self->server . '/pull');
 
@@ -1022,7 +1019,6 @@ Returns a L<< AI::Ollama::PushModelResponse >>.
 =cut
 
 sub pushModel( $self, %options ) {
-
     my $method = 'POST';
     my $url = Mojo::URL->new( $self->server . '/push');
 
@@ -1098,7 +1094,6 @@ Returns a L<< AI::Ollama::ModelInfo >>.
 =cut
 
 sub showModelInfo( $self, %options ) {
-
     my $method = 'POST';
     my $url = Mojo::URL->new( $self->server . '/show');
 
@@ -1161,7 +1156,6 @@ Returns a L<< AI::Ollama::ModelsResponse >>.
 =cut
 
 sub listModels( $self, %options ) {
-
     my $method = 'GET';
     my $url = Mojo::URL->new( $self->server . '/tags');
 
