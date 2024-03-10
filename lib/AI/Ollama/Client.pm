@@ -2,6 +2,7 @@ package AI::Ollama::Client 0.01;
 use 5.020;
 use Moo 2;
 use experimental 'signatures';
+use MIME::Base64 'encode_base64';
 
 extends 'AI::Ollama::Client::Impl';
 
@@ -108,9 +109,29 @@ Returns a L<< AI::Ollama::GenerateCompletionResponse >>.
 
 =cut
 
+around 'generateCompletion' => sub ( $super, $self, %options ) {
+    # Encode images as base64, if images exist:
+    # (but create a copy so we don't over write the input array)
+    if (my $images = $options{images}) {
+
+        # Allow { filename => '/etc/passwd' }
+        $options{images} = [
+            map {
+                my $item = $_;
+                if( ref($item) eq 'HASH' ) {
+                    $item = Mojo::File->new($item->{filename})->slurp();
+                };
+                encode_base64($item)
+            } @$images ];
+    }
+    return $super->($self, %options);
+};
+
 =head2 C<< pullModel >>
 
-  my $res = $client->pullModel()->get;
+  my $res = $client->pullModel(
+      name => 'llama',
+  )->get;
 
 Download a model from the ollama library.
 
