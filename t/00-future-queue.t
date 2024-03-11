@@ -18,12 +18,19 @@ my $queue = Future::Queue->new;
 for my $l (@lines) {
     $queue->enqueue($l);
 }
-$queue->enqueue(undef);
+$queue->shutdown;
 
 my $curr = $queue->head;
+my @received;
 repeat {
     my ($next,$str) = $curr->get;
-    say $str if defined $str;
+    if( defined $next ) {
+        note $str;
+        push @received, $str;
+    };
     $curr = $next;
-    Future->done($str);
 } while => sub($cont) { defined $cont->get };
+
+is \@received, \@lines, "We receive/send the same lines";
+
+done_testing();

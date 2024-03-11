@@ -17,23 +17,20 @@ Future::Queue - a simple queue with a Future API
   $q->enqueue('line 1');
   $q->enqueue('line 2');
   $q->enqueue('line 3');
-  $q->enqueue(undef); # our "end" marker
+  $q->shutdown(); # our "end" marker
 
   my $curr = $q->head;
   repeat {
       my ($next,$str) = $curr->get;
       say $str if defined $str;
       $curr = $next;
-
-      my $has_next = defined $str;
-      Future->done($has_next);
   } while => sub($cont) { $cont->get };
 
 =cut
 
 has 'head' => (
     is => 'lazy',
-    default => sub { Future::Mojo->new },
+    default => sub { Future->new },
 );
 
 has 'tail' => (
@@ -43,9 +40,13 @@ has 'tail' => (
 
 sub enqueue($self, @stuff) {
     my $res = $self->tail;
-    $self->{tail} = Future::Mojo->new;
+    $self->{tail} = Future->new;
     $res->resolve( $self->tail, @stuff );
     return
+}
+
+sub shutdown( $self ) {
+    $self->tail->done();
 }
 
 1;
