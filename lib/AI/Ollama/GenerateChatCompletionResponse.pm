@@ -10,6 +10,8 @@ sub as_hash( $self ) {
     return { $self->%* }
 }
 
+=head1 PROPERTIES
+
 =head2 C<< created_at >>
 
 Date on which a model was created.

@@ -10,6 +10,8 @@ sub as_hash( $self ) {
     return { $self->%* }
 }
 
+=head1 PROPERTIES
+
 =head2 C<< context >>
 
 An encoding of the conversation used in this response, this can be sent in the next request to keep a conversational memory.

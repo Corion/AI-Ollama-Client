@@ -13,21 +13,22 @@ my $tx = $ol->pullModel(
     name => 'llava:latest',
 )->get;
 
-my $tx = $ol->generateCompletion(
+my $responses = $ol->generateCompletion(
     model => 'llava:latest',
-    prompt => 'You are tagging images. Please list all the objects in this image as tags. Also list where it was taken.',
+    prompt => 'You are tagging images. Please list all the objects in this image as tags. Also list the location where it was taken.',
     images => [
         { filename => 't/testdata/objectdetection.jpg' },
     ],
 );
 
 repeat {
-    $| = 1;
-    my( $next, $resp ) = $tx->get;
-    print $resp->response;
-    $tx = $next;
+    my ($res) = $responses->shift;
+    my $info;
+    if( $res ) {
+        $info = $res->get;
+        local $| = 1;
+        print $info->response;
+    };
+    Future::Mojo->done( $info->done || !defined $res );
+} until => sub($done) { my $res = $done->get; return $res };
 
-    Future::Mojo->done( $resp->done );
-} until => sub($done) { $done->get };
-
-Mojo::IOLoop->start unless Mojo::IOLoop->is_running;

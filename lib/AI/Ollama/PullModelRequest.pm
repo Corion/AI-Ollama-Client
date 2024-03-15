@@ -10,6 +10,8 @@ sub as_hash( $self ) {
     return { $self->%* }
 }
 
+=head1 PROPERTIES
+
 =head2 C<< insecure >>
 
 Allow insecure connections to the library.

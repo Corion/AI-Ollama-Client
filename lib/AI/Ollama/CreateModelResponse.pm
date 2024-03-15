@@ -10,6 +10,8 @@ sub as_hash( $self ) {
     return { $self->%* }
 }
 
+=head1 PROPERTIES
+
 =head2 C<< status >>
 
 Status creating the model

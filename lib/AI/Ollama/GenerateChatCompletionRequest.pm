@@ -10,6 +10,8 @@ sub as_hash( $self ) {
     return { $self->%* }
 }
 
+=head1 PROPERTIES
+
 =head2 C<< format >>
 
 The format to return a response in. Currently the only accepted value is json.

@@ -10,6 +10,8 @@ sub as_hash( $self ) {
     return { $self->%* }
 }
 
+=head1 PROPERTIES
+
 =head2 C<< context >>
 
 The context parameter returned from a previous request to [generateCompletion], this can be used to keep a short conversational memory.

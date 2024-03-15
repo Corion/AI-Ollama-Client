@@ -4,6 +4,7 @@ use 5.020;
 use Moo 2;
 use experimental 'signatures';
 use PerlX::Maybe;
+use Carp 'croak';
 
 # These should go into a ::Role
 use YAML::PP;
@@ -35,11 +36,29 @@ use AI::Ollama::PushModelRequest;
 use AI::Ollama::PushModelResponse;
 use AI::Ollama::RequestOptions;
 
+=head1 SYNOPSIS
+
+=head1 PROPERTIES
+
+=head2 B<< openapi >>
+
+=head2 B<< ua >>
+
+=head2 B<< server >>
+
+=cut
+
 # XXX this should be more configurable, and potentially you don't want validation?!
-my $schema = YAML::PP->new( boolean => 'JSON::PP' )->load_file( 'ollama/ollama-curated.yaml' );
+has 'schema' => (
+    is => 'lazy',
+    default => sub {
+        YAML::PP->new( boolean => 'JSON::PP' )->load_file( 'ollama/ollama-curated.yaml' );
+    },
+);
+
 has 'openapi' => (
     is => 'lazy',
-    default => sub { OpenAPI::Modern->new( openapi_schema => $schema, openapi_uri => '/api' )},
+    default => sub { OpenAPI::Modern->new( openapi_schema => $_[0]->schema, openapi_uri => '/api' )},
 );
 
 # The HTTP stuff should go into a ::Role I guess
@@ -53,6 +72,8 @@ has 'server' => (
     default => sub { 'http://localhost:11434/api' }, # XXX pull from OpenAPI file instead
 );
 
+=head1 METHODS
+
 =head2 C<< checkBlob >>
 
   my $res = $client->checkBlob()->get;
@@ -61,18 +82,20 @@ Check to see if a blob exists on the Ollama server which is useful when creating
 
 =head3 Parameters
 
+=over 4
+
 =item B<< digest >>
 
 the SHA256 digest of the blob
 
-=cut
+=back
 
 
 
 =cut
 
 sub checkBlob( $self, %options ) {
-    croak "Missing required parameter 'digest'
+    croak "Missing required parameter 'digest'"
         unless exists $options{ 'digest' };
 
     my $method = 'HEAD';
@@ -82,7 +105,6 @@ sub checkBlob( $self, %options ) {
     );
     my $url = Mojo::URL->new( $self->server . $path );
 
-              # don't know how to handle this ...
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
@@ -106,10 +128,12 @@ sub checkBlob( $self, %options ) {
         if( $resp->code == 200 ) {
             # Blob exists on the server
             return Future::Mojo->done($resp);
-        }
-        if( $resp->code == 404 ) {
+        } elsif( $resp->code == 404 ) {
             # Blob was not found
             return Future::Mojo->done($resp);
+        } else {
+            # An unknown/unhandled response, likely an error
+            return Future::Mojo->fail($resp);
         }
     });
 
@@ -130,21 +154,20 @@ Create a blob from a file. Returns the server file path.
 
 =head3 Parameters
 
+=over 4
+
 =item B<< digest >>
 
 the SHA256 digest of the blob
 
-=cut
-
-
-=head3 Options
+=back
 
 
 
 =cut
 
 sub createBlob( $self, %options ) {
-    croak "Missing required parameter 'digest'
+    croak "Missing required parameter 'digest'"
         unless exists $options{ 'digest' };
 
     my $method = 'POST';
@@ -155,8 +178,6 @@ sub createBlob( $self, %options ) {
     my $url = Mojo::URL->new( $self->server . $path );
 
     my $request = AI::Ollama::->new( \%options );
-    # resp. validate %options against 
-    # send as application/octet-stream
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
@@ -181,6 +202,9 @@ sub createBlob( $self, %options ) {
         if( $resp->code == 201 ) {
             # Blob was successfully created
             return Future::Mojo->done($resp);
+        } else {
+            # An unknown/unhandled response, likely an error
+            return Future::Mojo->fail($resp);
         }
     });
 
@@ -196,36 +220,32 @@ sub createBlob( $self, %options ) {
 =head2 C<< generateChatCompletion >>
 
   use Future::Utils 'repeat';
-  my $tx = $client->generateChatCompletion();
+  my $responses = $client->generateChatCompletion();
   repeat {
-      my( $next, $resp ) = $tx->get;
-      # ...
-      $tx = $next;
+      my ($res) = $responses->shift;
+      if( $res ) {
+          my $str = $res->get;
+          say $str;
+      }
 
-      Future::Mojo->done( defined $resp );
+      Future::Mojo->done( defined $res );
   } until => sub($done) { $done->get };
 
 Generate the next message in a chat with a provided model.
-
 
 
 =head3 Options
 
 =over 4
 
-= C<< format >>
+=item C<< format >>
 
 The format to return a response in. Currently the only accepted value is json.
 
 Enable JSON mode by setting the format parameter to json. This will structure the response as valid JSON.
 
 Note: it's important to instruct the model to use JSON in the prompt. Otherwise, the model may generate large amounts whitespace.
-
-=back
-
-=over 4
-
-= C<< keep_alive >>
+=item C<< keep_alive >>
 
 How long (in minutes) to keep the model loaded in memory.
 
@@ -233,43 +253,21 @@ How long (in minutes) to keep the model loaded in memory.
 - If set to a negative duration (e.g. -1), the model will stay loaded indefinitely.
 - If set to 0, the model will be unloaded immediately once finished.
 - If not set, the model will stay loaded for 5 minutes by default
-
-=back
-
-=over 4
-
-= C<< messages >>
+=item C<< messages >>
 
 The messages of the chat, this can be used to keep a chat memory
-
-=back
-
-=over 4
-
-= C<< model >>
+=item C<< model >>
 
 The model name.
 
 Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
-
-=back
-
-=over 4
-
-= C<< options >>
+=item C<< options >>
 
 Additional model parameters listed in the documentation for the Modelfile such as `temperature`.
-
-=back
-
-=over 4
-
-= C<< stream >>
+=item C<< stream >>
 
 If `false` the response will be returned as a single response object, otherwise the response will be streamed as a series of objects.
-
 =back
-
 
 Returns a L<< AI::Ollama::GenerateChatCompletionResponse >>.
 
@@ -277,11 +275,10 @@ Returns a L<< AI::Ollama::GenerateChatCompletionResponse >>.
 
 sub generateChatCompletion( $self, %options ) {
     my $method = 'POST';
-    my $url = Mojo::URL->new( $self->server . '/chat');
+    my $path = '/chat';
+    my $url = Mojo::URL->new( $self->server . $path );
 
     my $request = AI::Ollama::GenerateChatCompletionRequest->new( \%options );
-    # resp. validate %options against GenerateChatCompletionRequest
-    # send as application/json
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
@@ -301,8 +298,7 @@ sub generateChatCompletion( $self, %options ) {
 
     my $r1 = Future::Mojo->new();
     use Future::Queue;
-    my $queue = Future::Queue->new;
-    my $res = $queue->head;
+    my $res = Future::Queue->new( prototype => 'Future::Mojo' );
     our @store; # we should use ->retain() instead
     push @store, $r1->then( sub( $tx ) {
         my $resp = $tx->res;
@@ -323,15 +319,19 @@ sub generateChatCompletion( $self, %options ) {
                     my @lines = split /\n/, $fresh;
                     for (@lines) {
                         my $payload = decode_json( $_ );
-                        $queue->enqueue(
+                        $res->push(
                             AI::Ollama::GenerateChatCompletionResponse->new($payload),
+
                         );
                     };
                     if( $msg->{state} eq 'finished' ) {
-                        $queue->enqueue( undef );
+                        $res->finish();
                     }
                 });
             }
+        } else {
+            # An unknown/unhandled response, likely an error
+            return Future::Mojo->fail($resp);
         }
     });
 
@@ -351,36 +351,27 @@ sub generateChatCompletion( $self, %options ) {
 Creates a model with another name from an existing model.
 
 
-
 =head3 Options
 
 =over 4
 
-= C<< destination >>
+=item C<< destination >>
 
 Name of the new model.
-
-=back
-
-=over 4
-
-= C<< source >>
+=item C<< source >>
 
 Name of the model to copy.
-
 =back
-
 
 
 =cut
 
 sub copyModel( $self, %options ) {
     my $method = 'POST';
-    my $url = Mojo::URL->new( $self->server . '/copy');
+    my $path = '/copy';
+    my $url = Mojo::URL->new( $self->server . $path );
 
     my $request = AI::Ollama::CopyModelRequest->new( \%options );
-    # resp. validate %options against CopyModelRequest
-    # send as application/json
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
@@ -404,6 +395,9 @@ sub copyModel( $self, %options ) {
         if( $resp->code == 200 ) {
             # Successful operation.
             return Future::Mojo->done($resp);
+        } else {
+            # An unknown/unhandled response, likely an error
+            return Future::Mojo->fail($resp);
         }
     });
 
@@ -419,47 +413,36 @@ sub copyModel( $self, %options ) {
 =head2 C<< createModel >>
 
   use Future::Utils 'repeat';
-  my $tx = $client->createModel();
+  my $responses = $client->createModel();
   repeat {
-      my( $next, $resp ) = $tx->get;
-      # ...
-      $tx = $next;
+      my ($res) = $responses->shift;
+      if( $res ) {
+          my $str = $res->get;
+          say $str;
+      }
 
-      Future::Mojo->done( defined $resp );
+      Future::Mojo->done( defined $res );
   } until => sub($done) { $done->get };
 
 Create a model from a Modelfile.
-
 
 
 =head3 Options
 
 =over 4
 
-= C<< modelfile >>
+=item C<< modelfile >>
 
 The contents of the Modelfile.
-
-=back
-
-=over 4
-
-= C<< name >>
+=item C<< name >>
 
 The model name.
 
 Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
-
-=back
-
-=over 4
-
-= C<< stream >>
+=item C<< stream >>
 
 If `false` the response will be returned as a single response object, otherwise the response will be streamed as a series of objects.
-
 =back
-
 
 Returns a L<< AI::Ollama::CreateModelResponse >>.
 
@@ -467,11 +450,10 @@ Returns a L<< AI::Ollama::CreateModelResponse >>.
 
 sub createModel( $self, %options ) {
     my $method = 'POST';
-    my $url = Mojo::URL->new( $self->server . '/create');
+    my $path = '/create';
+    my $url = Mojo::URL->new( $self->server . $path );
 
     my $request = AI::Ollama::CreateModelRequest->new( \%options );
-    # resp. validate %options against CreateModelRequest
-    # send as application/json
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
@@ -491,8 +473,7 @@ sub createModel( $self, %options ) {
 
     my $r1 = Future::Mojo->new();
     use Future::Queue;
-    my $queue = Future::Queue->new;
-    my $res = $queue->head;
+    my $res = Future::Queue->new( prototype => 'Future::Mojo' );
     our @store; # we should use ->retain() instead
     push @store, $r1->then( sub( $tx ) {
         my $resp = $tx->res;
@@ -513,15 +494,19 @@ sub createModel( $self, %options ) {
                     my @lines = split /\n/, $fresh;
                     for (@lines) {
                         my $payload = decode_json( $_ );
-                        $queue->enqueue(
+                        $res->push(
                             AI::Ollama::CreateModelResponse->new($payload),
+
                         );
                     };
                     if( $msg->{state} eq 'finished' ) {
-                        $queue->enqueue( undef );
+                        $res->finish();
                     }
                 });
             }
+        } else {
+            # An unknown/unhandled response, likely an error
+            return Future::Mojo->fail($resp);
         }
     });
 
@@ -541,30 +526,26 @@ sub createModel( $self, %options ) {
 Delete a model and its data.
 
 
-
 =head3 Options
 
 =over 4
 
-= C<< name >>
+=item C<< name >>
 
 The model name.
 
 Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
-
 =back
-
 
 
 =cut
 
 sub deleteModel( $self, %options ) {
     my $method = 'DELETE';
-    my $url = Mojo::URL->new( $self->server . '/delete');
+    my $path = '/delete';
+    my $url = Mojo::URL->new( $self->server . $path );
 
     my $request = AI::Ollama::DeleteModelRequest->new( \%options );
-    # resp. validate %options against DeleteModelRequest
-    # send as application/json
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
@@ -588,6 +569,9 @@ sub deleteModel( $self, %options ) {
         if( $resp->code == 200 ) {
             # Successful operation.
             return Future::Mojo->done($resp);
+        } else {
+            # An unknown/unhandled response, likely an error
+            return Future::Mojo->fail($resp);
         }
     });
 
@@ -607,35 +591,22 @@ sub deleteModel( $self, %options ) {
 Generate embeddings from a model.
 
 
-
 =head3 Options
 
 =over 4
 
-= C<< model >>
+=item C<< model >>
 
 The model name.
 
 Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
-
-=back
-
-=over 4
-
-= C<< options >>
+=item C<< options >>
 
 Additional model parameters listed in the documentation for the Modelfile such as `temperature`.
-
-=back
-
-=over 4
-
-= C<< prompt >>
+=item C<< prompt >>
 
 Text to generate embeddings for.
-
 =back
-
 
 Returns a L<< AI::Ollama::GenerateEmbeddingResponse >>.
 
@@ -643,11 +614,10 @@ Returns a L<< AI::Ollama::GenerateEmbeddingResponse >>.
 
 sub generateEmbedding( $self, %options ) {
     my $method = 'POST';
-    my $url = Mojo::URL->new( $self->server . '/embeddings');
+    my $path = '/embeddings';
+    my $url = Mojo::URL->new( $self->server . $path );
 
     my $request = AI::Ollama::GenerateEmbeddingRequest->new( \%options );
-    # resp. validate %options against GenerateEmbeddingRequest
-    # send as application/json
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
@@ -677,8 +647,12 @@ sub generateEmbedding( $self, %options ) {
                 my $payload = $resp->json();
                 return Future::Mojo->done(
                     AI::Ollama::GenerateEmbeddingResponse->new($payload),
+
                 );
             }
+        } else {
+            # An unknown/unhandled response, likely an error
+            return Future::Mojo->fail($resp);
         }
     });
 
@@ -694,52 +668,38 @@ sub generateEmbedding( $self, %options ) {
 =head2 C<< generateCompletion >>
 
   use Future::Utils 'repeat';
-  my $tx = $client->generateCompletion();
+  my $responses = $client->generateCompletion();
   repeat {
-      my( $next, $resp ) = $tx->get;
-      # ...
-      $tx = $next;
+      my ($res) = $responses->shift;
+      if( $res ) {
+          my $str = $res->get;
+          say $str;
+      }
 
-      Future::Mojo->done( defined $resp );
+      Future::Mojo->done( defined $res );
   } until => sub($done) { $done->get };
 
 Generate a response for a given prompt with a provided model.
-
 
 
 =head3 Options
 
 =over 4
 
-= C<< context >>
+=item C<< context >>
 
 The context parameter returned from a previous request to [generateCompletion], this can be used to keep a short conversational memory.
-
-=back
-
-=over 4
-
-= C<< format >>
+=item C<< format >>
 
 The format to return a response in. Currently the only accepted value is json.
 
 Enable JSON mode by setting the format parameter to json. This will structure the response as valid JSON.
 
 Note: it's important to instruct the model to use JSON in the prompt. Otherwise, the model may generate large amounts whitespace.
-
-=back
-
-=over 4
-
-= C<< images >>
+=item C<< images >>
 
 (optional) a list of Base64-encoded images to include in the message (for multimodal models such as llava)
-
-=back
-
-=over 4
-
-= C<< keep_alive >>
+=item C<< keep_alive >>
 
 How long (in minutes) to keep the model loaded in memory.
 
@@ -747,69 +707,32 @@ How long (in minutes) to keep the model loaded in memory.
 - If set to a negative duration (e.g. -1), the model will stay loaded indefinitely.
 - If set to 0, the model will be unloaded immediately once finished.
 - If not set, the model will stay loaded for 5 minutes by default
-
-=back
-
-=over 4
-
-= C<< model >>
+=item C<< model >>
 
 The model name.
 
 Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
-
-=back
-
-=over 4
-
-= C<< options >>
+=item C<< options >>
 
 Additional model parameters listed in the documentation for the Modelfile such as `temperature`.
-
-=back
-
-=over 4
-
-= C<< prompt >>
+=item C<< prompt >>
 
 The prompt to generate a response.
-
-=back
-
-=over 4
-
-= C<< raw >>
+=item C<< raw >>
 
 If `true` no formatting will be applied to the prompt and no context will be returned.
 
 You may choose to use the `raw` parameter if you are specifying a full templated prompt in your request to the API, and are managing history yourself.
-
-=back
-
-=over 4
-
-= C<< stream >>
+=item C<< stream >>
 
 If `false` the response will be returned as a single response object, otherwise the response will be streamed as a series of objects.
-
-=back
-
-=over 4
-
-= C<< system >>
+=item C<< system >>
 
 The system prompt to (overrides what is defined in the Modelfile).
-
-=back
-
-=over 4
-
-= C<< template >>
+=item C<< template >>
 
 The full prompt or prompt template (overrides what is defined in the Modelfile).
-
 =back
-
 
 Returns a L<< AI::Ollama::GenerateCompletionResponse >>.
 
@@ -817,11 +740,10 @@ Returns a L<< AI::Ollama::GenerateCompletionResponse >>.
 
 sub generateCompletion( $self, %options ) {
     my $method = 'POST';
-    my $url = Mojo::URL->new( $self->server . '/generate');
+    my $path = '/generate';
+    my $url = Mojo::URL->new( $self->server . $path );
 
     my $request = AI::Ollama::GenerateCompletionRequest->new( \%options );
-    # resp. validate %options against GenerateCompletionRequest
-    # send as application/json
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
@@ -841,8 +763,7 @@ sub generateCompletion( $self, %options ) {
 
     my $r1 = Future::Mojo->new();
     use Future::Queue;
-    my $queue = Future::Queue->new;
-    my $res = $queue->head;
+    my $res = Future::Queue->new( prototype => 'Future::Mojo' );
     our @store; # we should use ->retain() instead
     push @store, $r1->then( sub( $tx ) {
         my $resp = $tx->res;
@@ -863,15 +784,19 @@ sub generateCompletion( $self, %options ) {
                     my @lines = split /\n/, $fresh;
                     for (@lines) {
                         my $payload = decode_json( $_ );
-                        $queue->enqueue(
+                        $res->push(
                             AI::Ollama::GenerateCompletionResponse->new($payload),
+
                         );
                     };
                     if( $msg->{state} eq 'finished' ) {
-                        $queue->enqueue( undef );
+                        $res->finish();
                     }
                 });
             }
+        } else {
+            # An unknown/unhandled response, likely an error
+            return Future::Mojo->fail($resp);
         }
     });
 
@@ -891,37 +816,24 @@ sub generateCompletion( $self, %options ) {
 Download a model from the ollama library.
 
 
-
 =head3 Options
 
 =over 4
 
-= C<< insecure >>
+=item C<< insecure >>
 
 Allow insecure connections to the library.
 
 Only use this if you are pulling from your own library during development.
-
-=back
-
-=over 4
-
-= C<< name >>
+=item C<< name >>
 
 The model name.
 
 Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
-
-=back
-
-=over 4
-
-= C<< stream >>
+=item C<< stream >>
 
 If `false` the response will be returned as a single response object, otherwise the response will be streamed as a series of objects.
-
 =back
-
 
 Returns a L<< AI::Ollama::PullModelResponse >>.
 
@@ -929,11 +841,10 @@ Returns a L<< AI::Ollama::PullModelResponse >>.
 
 sub pullModel( $self, %options ) {
     my $method = 'POST';
-    my $url = Mojo::URL->new( $self->server . '/pull');
+    my $path = '/pull';
+    my $url = Mojo::URL->new( $self->server . $path );
 
     my $request = AI::Ollama::PullModelRequest->new( \%options );
-    # resp. validate %options against PullModelRequest
-    # send as application/json
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
@@ -963,8 +874,12 @@ sub pullModel( $self, %options ) {
                 my $payload = $resp->json();
                 return Future::Mojo->done(
                     AI::Ollama::PullModelResponse->new($payload),
+
                 );
             }
+        } else {
+            # An unknown/unhandled response, likely an error
+            return Future::Mojo->fail($resp);
         }
     });
 
@@ -984,35 +899,22 @@ sub pullModel( $self, %options ) {
 Upload a model to a model library.
 
 
-
 =head3 Options
 
 =over 4
 
-= C<< insecure >>
+=item C<< insecure >>
 
 Allow insecure connections to the library.
 
 Only use this if you are pushing to your library during development.
-
-=back
-
-=over 4
-
-= C<< name >>
+=item C<< name >>
 
 The name of the model to push in the form of <namespace>/<model>:<tag>.
-
-=back
-
-=over 4
-
-= C<< stream >>
+=item C<< stream >>
 
 If `false` the response will be returned as a single response object, otherwise the response will be streamed as a series of objects.
-
 =back
-
 
 Returns a L<< AI::Ollama::PushModelResponse >>.
 
@@ -1020,11 +922,10 @@ Returns a L<< AI::Ollama::PushModelResponse >>.
 
 sub pushModel( $self, %options ) {
     my $method = 'POST';
-    my $url = Mojo::URL->new( $self->server . '/push');
+    my $path = '/push';
+    my $url = Mojo::URL->new( $self->server . $path );
 
     my $request = AI::Ollama::PushModelRequest->new( \%options );
-    # resp. validate %options against PushModelRequest
-    # send as application/json
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
@@ -1054,8 +955,12 @@ sub pushModel( $self, %options ) {
                 my $payload = $resp->json();
                 return Future::Mojo->done(
                     AI::Ollama::PushModelResponse->new($payload),
+
                 );
             }
+        } else {
+            # An unknown/unhandled response, likely an error
+            return Future::Mojo->fail($resp);
         }
     });
 
@@ -1075,19 +980,16 @@ sub pushModel( $self, %options ) {
 Show details about a model including modelfile, template, parameters, license, and system prompt.
 
 
-
 =head3 Options
 
 =over 4
 
-= C<< name >>
+=item C<< name >>
 
 The model name.
 
 Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
-
 =back
-
 
 Returns a L<< AI::Ollama::ModelInfo >>.
 
@@ -1095,11 +997,10 @@ Returns a L<< AI::Ollama::ModelInfo >>.
 
 sub showModelInfo( $self, %options ) {
     my $method = 'POST';
-    my $url = Mojo::URL->new( $self->server . '/show');
+    my $path = '/show';
+    my $url = Mojo::URL->new( $self->server . $path );
 
     my $request = AI::Ollama::ModelInfoRequest->new( \%options );
-    # resp. validate %options against ModelInfoRequest
-    # send as application/json
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
@@ -1129,8 +1030,12 @@ sub showModelInfo( $self, %options ) {
                 my $payload = $resp->json();
                 return Future::Mojo->done(
                     AI::Ollama::ModelInfo->new($payload),
+
                 );
             }
+        } else {
+            # An unknown/unhandled response, likely an error
+            return Future::Mojo->fail($resp);
         }
     });
 
@@ -1150,16 +1055,15 @@ sub showModelInfo( $self, %options ) {
 List models that are available locally.
 
 
-
 Returns a L<< AI::Ollama::ModelsResponse >>.
 
 =cut
 
 sub listModels( $self, %options ) {
     my $method = 'GET';
-    my $url = Mojo::URL->new( $self->server . '/tags');
+    my $path = '/tags';
+    my $url = Mojo::URL->new( $self->server . $path );
 
-              # don't know how to handle this ...
     my $tx = $self->ua->build_tx(
         $method => $url,
         {
@@ -1189,8 +1093,12 @@ sub listModels( $self, %options ) {
                 my $payload = $resp->json();
                 return Future::Mojo->done(
                     AI::Ollama::ModelsResponse->new($payload),
+
                 );
             }
+        } else {
+            # An unknown/unhandled response, likely an error
+            return Future::Mojo->fail($resp);
         }
     });
 
