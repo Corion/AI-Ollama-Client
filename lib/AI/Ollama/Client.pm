@@ -101,7 +101,17 @@ Returns a L<< AI::Ollama::GenerateEmbeddingResponse >>.
 
 =head2 C<< generateCompletion >>
 
-  my $res = $client->generateCompletion()->get;
+  use Future::Utils 'repeat';
+  my $responses = $client->generateCompletion();
+  repeat {
+      my ($res) = $responses->shift;
+      if( $res ) {
+          my $str = $res->get;
+          say $str;
+      }
+
+      Future::Mojo->done( defined $res );
+  } until => sub($done) { $done->get };
 
 Generate a response for a given prompt with a provided model.
 
