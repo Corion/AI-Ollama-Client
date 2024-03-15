@@ -245,6 +245,7 @@ The format to return a response in. Currently the only accepted value is json.
 Enable JSON mode by setting the format parameter to json. This will structure the response as valid JSON.
 
 Note: it's important to instruct the model to use JSON in the prompt. Otherwise, the model may generate large amounts whitespace.
+
 =item C<< keep_alive >>
 
 How long (in minutes) to keep the model loaded in memory.
@@ -253,20 +254,25 @@ How long (in minutes) to keep the model loaded in memory.
 - If set to a negative duration (e.g. -1), the model will stay loaded indefinitely.
 - If set to 0, the model will be unloaded immediately once finished.
 - If not set, the model will stay loaded for 5 minutes by default
+
 =item C<< messages >>
 
 The messages of the chat, this can be used to keep a chat memory
+
 =item C<< model >>
 
 The model name.
 
 Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
+
 =item C<< options >>
 
 Additional model parameters listed in the documentation for the Modelfile such as `temperature`.
+
 =item C<< stream >>
 
 If `false` the response will be returned as a single response object, otherwise the response will be streamed as a series of objects.
+
 =back
 
 Returns a L<< AI::Ollama::GenerateChatCompletionResponse >>.
@@ -358,9 +364,11 @@ Creates a model with another name from an existing model.
 =item C<< destination >>
 
 Name of the new model.
+
 =item C<< source >>
 
 Name of the model to copy.
+
 =back
 
 
@@ -434,14 +442,17 @@ Create a model from a Modelfile.
 =item C<< modelfile >>
 
 The contents of the Modelfile.
+
 =item C<< name >>
 
 The model name.
 
 Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
+
 =item C<< stream >>
 
 If `false` the response will be returned as a single response object, otherwise the response will be streamed as a series of objects.
+
 =back
 
 Returns a L<< AI::Ollama::CreateModelResponse >>.
@@ -535,6 +546,7 @@ Delete a model and its data.
 The model name.
 
 Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
+
 =back
 
 
@@ -600,12 +612,15 @@ Generate embeddings from a model.
 The model name.
 
 Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
+
 =item C<< options >>
 
 Additional model parameters listed in the documentation for the Modelfile such as `temperature`.
+
 =item C<< prompt >>
 
 Text to generate embeddings for.
+
 =back
 
 Returns a L<< AI::Ollama::GenerateEmbeddingResponse >>.
@@ -689,6 +704,7 @@ Generate a response for a given prompt with a provided model.
 =item C<< context >>
 
 The context parameter returned from a previous request to [generateCompletion], this can be used to keep a short conversational memory.
+
 =item C<< format >>
 
 The format to return a response in. Currently the only accepted value is json.
@@ -696,9 +712,11 @@ The format to return a response in. Currently the only accepted value is json.
 Enable JSON mode by setting the format parameter to json. This will structure the response as valid JSON.
 
 Note: it's important to instruct the model to use JSON in the prompt. Otherwise, the model may generate large amounts whitespace.
+
 =item C<< images >>
 
 (optional) a list of Base64-encoded images to include in the message (for multimodal models such as llava)
+
 =item C<< keep_alive >>
 
 How long (in minutes) to keep the model loaded in memory.
@@ -707,31 +725,39 @@ How long (in minutes) to keep the model loaded in memory.
 - If set to a negative duration (e.g. -1), the model will stay loaded indefinitely.
 - If set to 0, the model will be unloaded immediately once finished.
 - If not set, the model will stay loaded for 5 minutes by default
+
 =item C<< model >>
 
 The model name.
 
 Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
+
 =item C<< options >>
 
 Additional model parameters listed in the documentation for the Modelfile such as `temperature`.
+
 =item C<< prompt >>
 
 The prompt to generate a response.
+
 =item C<< raw >>
 
 If `true` no formatting will be applied to the prompt and no context will be returned.
 
 You may choose to use the `raw` parameter if you are specifying a full templated prompt in your request to the API, and are managing history yourself.
+
 =item C<< stream >>
 
 If `false` the response will be returned as a single response object, otherwise the response will be streamed as a series of objects.
+
 =item C<< system >>
 
 The system prompt to (overrides what is defined in the Modelfile).
+
 =item C<< template >>
 
 The full prompt or prompt template (overrides what is defined in the Modelfile).
+
 =back
 
 Returns a L<< AI::Ollama::GenerateCompletionResponse >>.
@@ -825,14 +851,17 @@ Download a model from the ollama library.
 Allow insecure connections to the library.
 
 Only use this if you are pulling from your own library during development.
+
 =item C<< name >>
 
 The model name.
 
 Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
+
 =item C<< stream >>
 
 If `false` the response will be returned as a single response object, otherwise the response will be streamed as a series of objects.
+
 =back
 
 Returns a L<< AI::Ollama::PullModelResponse >>.
@@ -908,12 +937,15 @@ Upload a model to a model library.
 Allow insecure connections to the library.
 
 Only use this if you are pushing to your library during development.
+
 =item C<< name >>
 
 The name of the model to push in the form of <namespace>/<model>:<tag>.
+
 =item C<< stream >>
 
 If `false` the response will be returned as a single response object, otherwise the response will be streamed as a series of objects.
+
 =back
 
 Returns a L<< AI::Ollama::PushModelResponse >>.
@@ -989,6 +1021,7 @@ Show details about a model including modelfile, template, parameters, license, a
 The model name.
 
 Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` and `llama2:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
+
 =back
 
 Returns a L<< AI::Ollama::ModelInfo >>.
