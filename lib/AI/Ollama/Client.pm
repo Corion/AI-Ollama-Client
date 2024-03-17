@@ -29,7 +29,6 @@ AI::Ollama::Client - Client for AI::Ollama
 
 Check to see if a blob exists on the Ollama server which is useful when creating models.
 
-
 =cut
 
 around 'checkBlob' => sub ( $super, $self, %options ) {
@@ -47,7 +46,6 @@ around 'checkBlob' => sub ( $super, $self, %options ) {
   my $res = $client->createBlob()->get;
 
 Create a blob from a file. Returns the server file path.
-
 
 =cut
 
