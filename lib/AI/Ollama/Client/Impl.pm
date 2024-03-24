@@ -94,7 +94,7 @@ the SHA256 digest of the blob
 
 =cut
 
-sub checkBlob( $self, %options ) {
+sub _build_checkBlob_request( $self, %options ) {
     croak "Missing required parameter 'digest'"
         unless exists $options{ 'digest' };
 
@@ -112,6 +112,13 @@ sub checkBlob( $self, %options ) {
         # XXX Need to fill the body
         # => $body,
     );
+
+    return $tx
+}
+
+
+sub checkBlob( $self, %options ) {
+    my $tx = $self->_build_checkBlob_request(%options);
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
@@ -141,6 +148,9 @@ sub checkBlob( $self, %options ) {
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
         $r1->resolve( $tx );
         undef $r1;
+    })->catch(sub($err) {
+        $r1->fail( $err => $tx );
+        undef $r1;
     });
 
     return $res
@@ -166,7 +176,7 @@ the SHA256 digest of the blob
 
 =cut
 
-sub createBlob( $self, %options ) {
+sub _build_createBlob_request( $self, %options ) {
     croak "Missing required parameter 'digest'"
         unless exists $options{ 'digest' };
 
@@ -186,6 +196,13 @@ sub createBlob( $self, %options ) {
         # XXX Need to fill the body
         # => $body,
     );
+
+    return $tx
+}
+
+
+sub createBlob( $self, %options ) {
+    my $tx = $self->_build_createBlob_request(%options);
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
@@ -211,6 +228,9 @@ sub createBlob( $self, %options ) {
     # Start our transaction
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
         $r1->resolve( $tx );
+        undef $r1;
+    })->catch(sub($err) {
+        $r1->fail( $err => $tx );
         undef $r1;
     });
 
@@ -279,7 +299,7 @@ Returns a L<< AI::Ollama::GenerateChatCompletionResponse >>.
 
 =cut
 
-sub generateChatCompletion( $self, %options ) {
+sub _build_generateChatCompletion_request( $self, %options ) {
     my $method = 'POST';
     my $path = '/chat';
     my $url = Mojo::URL->new( $self->server . $path );
@@ -293,6 +313,13 @@ sub generateChatCompletion( $self, %options ) {
         }
         => json => $request->as_hash,
     );
+
+    return $tx
+}
+
+
+sub generateChatCompletion( $self, %options ) {
+    my $tx = $self->_build_generateChatCompletion_request(%options);
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
@@ -341,11 +368,13 @@ sub generateChatCompletion( $self, %options ) {
         }
     });
 
-    $tx->res->once( progress => sub($msg, @) {
+    my $_tx;
+    $tx = $tx->res->once( progress => sub($msg, @) {
         $r1->resolve( $tx );
+        undef $_tx;
         undef $r1;
     });
-    state $_tx = $self->ua->start_p($tx);
+    $_tx = $self->ua->start_p($tx);
 
     return $res
 }
@@ -374,7 +403,7 @@ Name of the model to copy.
 
 =cut
 
-sub copyModel( $self, %options ) {
+sub _build_copyModel_request( $self, %options ) {
     my $method = 'POST';
     my $path = '/copy';
     my $url = Mojo::URL->new( $self->server . $path );
@@ -387,6 +416,13 @@ sub copyModel( $self, %options ) {
         }
         => json => $request->as_hash,
     );
+
+    return $tx
+}
+
+
+sub copyModel( $self, %options ) {
+    my $tx = $self->_build_copyModel_request(%options);
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
@@ -412,6 +448,9 @@ sub copyModel( $self, %options ) {
     # Start our transaction
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
         $r1->resolve( $tx );
+        undef $r1;
+    })->catch(sub($err) {
+        $r1->fail( $err => $tx );
         undef $r1;
     });
 
@@ -459,7 +498,7 @@ Returns a L<< AI::Ollama::CreateModelResponse >>.
 
 =cut
 
-sub createModel( $self, %options ) {
+sub _build_createModel_request( $self, %options ) {
     my $method = 'POST';
     my $path = '/create';
     my $url = Mojo::URL->new( $self->server . $path );
@@ -473,6 +512,13 @@ sub createModel( $self, %options ) {
         }
         => json => $request->as_hash,
     );
+
+    return $tx
+}
+
+
+sub createModel( $self, %options ) {
+    my $tx = $self->_build_createModel_request(%options);
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
@@ -521,11 +567,13 @@ sub createModel( $self, %options ) {
         }
     });
 
-    $tx->res->once( progress => sub($msg, @) {
+    my $_tx;
+    $tx = $tx->res->once( progress => sub($msg, @) {
         $r1->resolve( $tx );
+        undef $_tx;
         undef $r1;
     });
-    state $_tx = $self->ua->start_p($tx);
+    $_tx = $self->ua->start_p($tx);
 
     return $res
 }
@@ -552,7 +600,7 @@ Model names follow a `model:tag` format. Some examples are `orca-mini:3b-q4_1` a
 
 =cut
 
-sub deleteModel( $self, %options ) {
+sub _build_deleteModel_request( $self, %options ) {
     my $method = 'DELETE';
     my $path = '/delete';
     my $url = Mojo::URL->new( $self->server . $path );
@@ -565,6 +613,13 @@ sub deleteModel( $self, %options ) {
         }
         => json => $request->as_hash,
     );
+
+    return $tx
+}
+
+
+sub deleteModel( $self, %options ) {
+    my $tx = $self->_build_deleteModel_request(%options);
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
@@ -590,6 +645,9 @@ sub deleteModel( $self, %options ) {
     # Start our transaction
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
         $r1->resolve( $tx );
+        undef $r1;
+    })->catch(sub($err) {
+        $r1->fail( $err => $tx );
         undef $r1;
     });
 
@@ -627,7 +685,7 @@ Returns a L<< AI::Ollama::GenerateEmbeddingResponse >>.
 
 =cut
 
-sub generateEmbedding( $self, %options ) {
+sub _build_generateEmbedding_request( $self, %options ) {
     my $method = 'POST';
     my $path = '/embeddings';
     my $url = Mojo::URL->new( $self->server . $path );
@@ -641,6 +699,13 @@ sub generateEmbedding( $self, %options ) {
         }
         => json => $request->as_hash,
     );
+
+    return $tx
+}
+
+
+sub generateEmbedding( $self, %options ) {
+    my $tx = $self->_build_generateEmbedding_request(%options);
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
@@ -674,6 +739,9 @@ sub generateEmbedding( $self, %options ) {
     # Start our transaction
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
         $r1->resolve( $tx );
+        undef $r1;
+    })->catch(sub($err) {
+        $r1->fail( $err => $tx );
         undef $r1;
     });
 
@@ -764,7 +832,7 @@ Returns a L<< AI::Ollama::GenerateCompletionResponse >>.
 
 =cut
 
-sub generateCompletion( $self, %options ) {
+sub _build_generateCompletion_request( $self, %options ) {
     my $method = 'POST';
     my $path = '/generate';
     my $url = Mojo::URL->new( $self->server . $path );
@@ -779,13 +847,20 @@ sub generateCompletion( $self, %options ) {
         => json => $request->as_hash,
     );
 
+    return $tx
+}
+
+
+sub generateCompletion( $self, %options ) {
+    my $tx = $self->_build_generateCompletion_request(%options);
+
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
     if( $results->{error}) {
         say $results;
         say $tx->req->to_string;
     };
-
+warn "Request valid(ish)";
 
     my $r1 = Future::Mojo->new();
     use Future::Queue;
@@ -826,11 +901,13 @@ sub generateCompletion( $self, %options ) {
         }
     });
 
+    my $_tx;
     $tx->res->once( progress => sub($msg, @) {
         $r1->resolve( $tx );
+        undef $_tx;
         undef $r1;
     });
-    state $_tx = $self->ua->start_p($tx);
+    $_tx = $self->ua->start_p($tx);
 
     return $res
 }
@@ -868,7 +945,7 @@ Returns a L<< AI::Ollama::PullModelResponse >>.
 
 =cut
 
-sub pullModel( $self, %options ) {
+sub _build_pullModel_request( $self, %options ) {
     my $method = 'POST';
     my $path = '/pull';
     my $url = Mojo::URL->new( $self->server . $path );
@@ -882,6 +959,13 @@ sub pullModel( $self, %options ) {
         }
         => json => $request->as_hash,
     );
+
+    return $tx
+}
+
+
+sub pullModel( $self, %options ) {
+    my $tx = $self->_build_pullModel_request(%options);
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
@@ -915,6 +999,9 @@ sub pullModel( $self, %options ) {
     # Start our transaction
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
         $r1->resolve( $tx );
+        undef $r1;
+    })->catch(sub($err) {
+        $r1->fail( $err => $tx );
         undef $r1;
     });
 
@@ -952,7 +1039,7 @@ Returns a L<< AI::Ollama::PushModelResponse >>.
 
 =cut
 
-sub pushModel( $self, %options ) {
+sub _build_pushModel_request( $self, %options ) {
     my $method = 'POST';
     my $path = '/push';
     my $url = Mojo::URL->new( $self->server . $path );
@@ -966,6 +1053,13 @@ sub pushModel( $self, %options ) {
         }
         => json => $request->as_hash,
     );
+
+    return $tx
+}
+
+
+sub pushModel( $self, %options ) {
+    my $tx = $self->_build_pushModel_request(%options);
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
@@ -1000,6 +1094,9 @@ sub pushModel( $self, %options ) {
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
         $r1->resolve( $tx );
         undef $r1;
+    })->catch(sub($err) {
+        $r1->fail( $err => $tx );
+        undef $r1;
     });
 
     return $res
@@ -1028,7 +1125,7 @@ Returns a L<< AI::Ollama::ModelInfo >>.
 
 =cut
 
-sub showModelInfo( $self, %options ) {
+sub _build_showModelInfo_request( $self, %options ) {
     my $method = 'POST';
     my $path = '/show';
     my $url = Mojo::URL->new( $self->server . $path );
@@ -1042,6 +1139,13 @@ sub showModelInfo( $self, %options ) {
         }
         => json => $request->as_hash,
     );
+
+    return $tx
+}
+
+
+sub showModelInfo( $self, %options ) {
+    my $tx = $self->_build_showModelInfo_request(%options);
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
@@ -1076,6 +1180,9 @@ sub showModelInfo( $self, %options ) {
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
         $r1->resolve( $tx );
         undef $r1;
+    })->catch(sub($err) {
+        $r1->fail( $err => $tx );
+        undef $r1;
     });
 
     return $res
@@ -1092,7 +1199,7 @@ Returns a L<< AI::Ollama::ModelsResponse >>.
 
 =cut
 
-sub listModels( $self, %options ) {
+sub _build_listModels_request( $self, %options ) {
     my $method = 'GET';
     my $path = '/tags';
     my $url = Mojo::URL->new( $self->server . $path );
@@ -1105,6 +1212,13 @@ sub listModels( $self, %options ) {
         # XXX Need to fill the body
         # => $body,
     );
+
+    return $tx
+}
+
+
+sub listModels( $self, %options ) {
+    my $tx = $self->_build_listModels_request(%options);
 
     # validate our request while developing
     my $results = $self->openapi->validate_request($tx->req);
@@ -1138,6 +1252,9 @@ sub listModels( $self, %options ) {
     # Start our transaction
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
         $r1->resolve( $tx );
+        undef $r1;
+    })->catch(sub($err) {
+        $r1->fail( $err => $tx );
         undef $r1;
     });
 
