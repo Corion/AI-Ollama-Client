@@ -860,7 +860,6 @@ sub generateCompletion( $self, %options ) {
         say $results;
         say $tx->req->to_string;
     };
-warn "Request valid(ish)";
 
     my $r1 = Future::Mojo->new();
     use Future::Queue;
