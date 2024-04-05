@@ -21,8 +21,7 @@ Makefile$
 ^MYMETA
 ^.releaserc
 ^.*.cmd
-^chrome-versions
-^WWW-Mechanize-Chrome
+^AI-Ollama-Client
 ^frame-\d+.png
 ^demo/
 ^\.carmel/

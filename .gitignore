@@ -5,14 +5,10 @@ Makefile.old
 *.swp
 pm_to_blib
 blib/
-WWW-Mechanize-Chrome-*
-WWW-Mechanize-Chrome-*/
+AI-Ollama-Client-*
+AI-Ollama-Client-*/
 .releaserc
 cover_db
-firefox-versions/
-chrome-versions/
 MYMETA.*
-frame-*.png
-*.pl
 .prove
 .patch

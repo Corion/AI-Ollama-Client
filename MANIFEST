@@ -26,6 +26,8 @@ LICENSE
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
+META.json
+META.yml
 ollama/ollama-curated.json
 ollama/ollama-curated.yaml
 openapi/petstore-expanded.yaml
