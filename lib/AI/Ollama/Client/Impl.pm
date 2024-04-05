@@ -48,7 +48,7 @@ use AI::Ollama::RequestOptions;
 
 =cut
 
-# XXX this should be more configurable, and potentially you don't want validation?!
+# this should be more configurable, and potentially you don't want validation?!
 has 'schema' => (
     is => 'lazy',
     default => sub {
@@ -69,7 +69,7 @@ has 'ua' => (
 
 has 'server' => (
     is => 'lazy',
-    default => sub { 'http://localhost:11434/api' }, # XXX pull from OpenAPI file instead
+    default => sub { 'http://localhost:11434/api' },
 );
 
 =head1 METHODS
@@ -109,8 +109,6 @@ sub _build_checkBlob_request( $self, %options ) {
         $method => $url,
         {
         }
-        # XXX Need to fill the body
-        # => $body,
     );
 
     return $tx
@@ -193,7 +191,7 @@ sub _build_createBlob_request( $self, %options ) {
         {
             "Content-Type" => 'application/octet-stream',
         }
-        # XXX Need to fill the body
+        # Need to fill the body
         # => $body,
     );
 
@@ -836,7 +834,6 @@ sub _build_generateCompletion_request( $self, %options ) {
     my $method = 'POST';
     my $path = '/generate';
     my $url = Mojo::URL->new( $self->server . $path );
-
     my $request = AI::Ollama::GenerateCompletionRequest->new( \%options );
     my $tx = $self->ua->build_tx(
         $method => $url,
@@ -1208,8 +1205,6 @@ sub _build_listModels_request( $self, %options ) {
         {
             'Accept' => 'application/json',
         }
-        # XXX Need to fill the body
-        # => $body,
     );
 
     return $tx
