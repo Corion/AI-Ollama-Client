@@ -10,6 +10,7 @@ build_requires:
   Mojo::JSON: '0'
   Mojolicious: '9'
   Moo: '2'
+  PerlX::Maybe: '0'
   Test2::V0: '0'
   experimental: '0.031'
   stable: '0.031'
