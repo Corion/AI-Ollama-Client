@@ -16,13 +16,14 @@ my $tx = $ol->pullModel(
 my @images = @ARGV ? @ARGV : ('t/testdata/objectdetection.jpg');
 
 for my $image (@images) {
-    my $responses = $ol->generateCompletion(
+    my $response = $ol->generateCompletion(
         model => 'llava:latest',
         prompt => 'You are tagging images. Please list all the objects in this image as tags. Also list the location where it was taken.',
         images => [
             { filename => $image },
         ],
     );
+    my $responses = $response->get;
 
     repeat {
         my ($res) = $responses->shift;
