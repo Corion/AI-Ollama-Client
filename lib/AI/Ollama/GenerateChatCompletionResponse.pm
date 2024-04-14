@@ -4,7 +4,7 @@ use 5.020;
 use Moo 2;
 use experimental 'signatures';
 use stable 'postderef';
-use Types::Standard qw(Str Bool Num Int Object ArrayRef);
+use Types::Standard qw(Str Bool Num Int ArrayRef HashRef);
 use MooX::TypeTiny;
 
 =head1 NAME
@@ -86,7 +86,7 @@ A message in the chat endpoint
 
 has 'message' => (
     is       => 'ro',
-    isa      => Object,
+    isa      => HashRef,
 );
 
 =head2 C<< model >>

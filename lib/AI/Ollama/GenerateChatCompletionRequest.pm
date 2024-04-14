@@ -4,7 +4,7 @@ use 5.020;
 use Moo 2;
 use experimental 'signatures';
 use stable 'postderef';
-use Types::Standard qw(Str Bool Num Int Object ArrayRef);
+use Types::Standard qw(Str Bool Num Int ArrayRef HashRef);
 use MooX::TypeTiny;
 
 =head1 NAME
@@ -63,7 +63,7 @@ The messages of the chat, this can be used to keep a chat memory
 
 has 'messages' => (
     is       => 'ro',
-    isa      => ArrayRef[Object],
+    isa      => ArrayRef[HashRef],
     required => 1,
 );
 
@@ -89,7 +89,7 @@ Additional model parameters listed in the documentation for the Modelfile such a
 
 has 'options' => (
     is       => 'ro',
-    isa      => Object,
+    isa      => HashRef,
 );
 
 =head2 C<< stream >>

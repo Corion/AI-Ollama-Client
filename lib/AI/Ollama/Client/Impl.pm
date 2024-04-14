@@ -49,7 +49,7 @@ use AI::Ollama::RequestOptions;
 
 =cut
 
-# this should be more configurable, and potentially you don't want validation?!
+# XXX this should be more configurable, and potentially you don't want validation?!
 has 'schema' => (
     is => 'lazy',
     default => sub {
@@ -70,7 +70,7 @@ has 'ua' => (
 
 has 'server' => (
     is => 'lazy',
-    default => sub { 'http://localhost:11434/api' },
+    default => sub { 'http://localhost:11434/api' }, # XXX pull from OpenAPI file instead
 );
 
 =head1 METHODS
@@ -143,7 +143,7 @@ sub checkBlob( $self, %options ) {
             # An unknown/unhandled response, likely an error
             $res->fail($resp);
         }
-    });
+    })->retain;
 
     # Start our transaction
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
@@ -225,7 +225,7 @@ sub createBlob( $self, %options ) {
             # An unknown/unhandled response, likely an error
             $res->fail($resp);
         }
-    });
+    })->retain;
 
     # Start our transaction
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
@@ -472,7 +472,7 @@ sub copyModel( $self, %options ) {
             # An unknown/unhandled response, likely an error
             $res->fail($resp);
         }
-    });
+    })->retain;
 
     # Start our transaction
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
@@ -677,7 +677,7 @@ sub deleteModel( $self, %options ) {
             # An unknown/unhandled response, likely an error
             $res->fail($resp);
         }
-    });
+    })->retain;
 
     # Start our transaction
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
@@ -776,7 +776,7 @@ sub generateEmbedding( $self, %options ) {
             # An unknown/unhandled response, likely an error
             $res->fail($resp);
         }
-    });
+    })->retain;
 
     # Start our transaction
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
@@ -1066,7 +1066,7 @@ sub pullModel( $self, %options ) {
             # An unknown/unhandled response, likely an error
             $res->fail($resp);
         }
-    });
+    })->retain;
 
     # Start our transaction
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
@@ -1165,7 +1165,7 @@ sub pushModel( $self, %options ) {
             # An unknown/unhandled response, likely an error
             $res->fail($resp);
         }
-    });
+    })->retain;
 
     # Start our transaction
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
@@ -1256,7 +1256,7 @@ sub showModelInfo( $self, %options ) {
             # An unknown/unhandled response, likely an error
             $res->fail($resp);
         }
-    });
+    })->retain;
 
     # Start our transaction
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
@@ -1332,7 +1332,7 @@ sub listModels( $self, %options ) {
             # An unknown/unhandled response, likely an error
             $res->fail($resp);
         }
-    });
+    })->retain;
 
     # Start our transaction
     $tx = $self->ua->start_p($tx)->then(sub($tx) {
