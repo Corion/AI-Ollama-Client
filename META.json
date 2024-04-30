@@ -60,15 +60,15 @@
    "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
-         "web" : "https://github.com/Corion/AI-Ollama-Client/issues"
+         "web" : "https://github.com/Corion/AI-Ollama/issues"
       },
       "license" : [
          "https://dev.perl.org/licenses/"
       ],
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/Corion/AI-Ollama-Client.git",
-         "web" : "https://github.com/Corion/AI-Ollama-Client"
+         "url" : "git://github.com/Corion/AI-Ollama.git",
+         "web" : "https://github.com/Corion/AI-Ollama"
       }
    },
    "version" : "0.03",

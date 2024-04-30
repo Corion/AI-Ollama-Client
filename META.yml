@@ -37,9 +37,9 @@ requires:
   perl: '5.020'
   stable: '0.031'
 resources:
-  bugtracker: https://github.com/Corion/AI-Ollama-Client/issues
+  bugtracker: https://github.com/Corion/AI-Ollama/issues
   license: https://dev.perl.org/licenses/
-  repository: git://github.com/Corion/AI-Ollama-Client.git
+  repository: git://github.com/Corion/AI-Ollama.git
 version: '0.03'
 x_serialization_backend: 'CPAN::Meta::YAML version 0.018'
 x_static_install: 1

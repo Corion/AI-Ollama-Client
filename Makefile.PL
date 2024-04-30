@@ -14,6 +14,7 @@ my $module = 'AI::Ollama::Client';
 (my $main_file = "lib/$module.pm" ) =~ s!::!/!g;
 (my $distbase = $module) =~ s!::!-!g;
 my $distlink = $distbase;
+(my $distrepo = $distbase) =~ s!-Client$!!g;
 
 my @tests = map { glob $_ } 't/*.t', 't/*/*.t';
 
@@ -26,12 +27,12 @@ my %module = (
         "meta-spec" => { version => 2 },
         resources => {
             repository => {
-                web => "https://github.com/Corion/$distlink",
-                url => "git://github.com/Corion/$distlink.git",
+                web => "https://github.com/Corion/$distrepo",
+                url => "git://github.com/Corion/$distrepo.git",
                 type => 'git',
             },
             bugtracker  => {
-              web    => "https://github.com/Corion/$distbase/issues",
+              web    => "https://github.com/Corion/$distrepo/issues",
               # mailto => 'meta-bugs@example.com',
             },
             license    => "https://dev.perl.org/licenses/",
@@ -177,9 +178,9 @@ INSTALL
         $parser->parse_from_file($_[0]);
         my $readme_mkdn = <<STATUS . $parser->as_markdown;
 
-[![Windows](https://github.com/Corion/$distbase/workflows/windows/badge.svg)](https://github.com/Corion/$distbase/actions?query=workflow%3Awindows)
-[![MacOS](https://github.com/Corion/$distbase/workflows/macos/badge.svg)](https://github.com/Corion/$distbase/actions?query=workflow%3Amacos)
-[![Linux](https://github.com/Corion/$distbase/workflows/linux/badge.svg)](https://github.com/Corion/$distbase/actions?query=workflow%3Alinux)
+[![Windows](https://github.com/Corion/$distrepo/workflows/windows/badge.svg)](https://github.com/Corion/$distrepo/actions?query=workflow%3Awindows)
+[![MacOS](https://github.com/Corion/$distrepo/workflows/macos/badge.svg)](https://github.com/Corion/$distrepo/actions?query=workflow%3Amacos)
+[![Linux](https://github.com/Corion/$distrepo/workflows/linux/badge.svg)](https://github.com/Corion/$distrepo/actions?query=workflow%3Alinux)
 
 STATUS
         update_file( 'README.mkdn', $readme_mkdn );
