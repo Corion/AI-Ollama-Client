@@ -34,6 +34,8 @@ requires:
   Moo: '2'
   OpenAPI::Modern: '0'
   PerlX::Maybe: '0'
+  Role::EventEmitter: '0'
+  URI::Template: '0'
   YAML::PP: '0'
   experimental: '0.031'
   perl: '5.020'

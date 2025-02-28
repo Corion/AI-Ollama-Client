@@ -67,6 +67,8 @@ my %module = (
         'Mojo::UserAgent'     => 0,
         'OpenAPI::Modern'     => 0,
         'PerlX::Maybe'        => 0,
+        'Role::EventEmitter'  => 0,
+        'URI::Template'       => 0,
         'YAML::PP'            => 0,
     },
     TEST_REQUIRES => {
