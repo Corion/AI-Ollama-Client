@@ -74,7 +74,7 @@
          "web" : "https://github.com/Corion/AI-Ollama-Client"
       }
    },
-   "version" : "0.04",
+   "version" : "0.05",
    "x_serialization_backend" : "JSON::PP version 4.16",
    "x_static_install" : 1
 }
